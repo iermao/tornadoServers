@@ -46,10 +46,12 @@ class game():
             return False, " _keys err"
         # 查询用户匹配数据
         puid = self.dbmanage.selUser(_uid, _pwd)
+
         if (puid < 1):
             return False, " puid err" + str(puid)
 
         nobj.current_user.cid = puid
+        print("11111111111")
 
         print(nobj.current_user.cid)
 
@@ -66,18 +68,18 @@ class game():
     # 玩家列表增加数据
     def PListInsert(self, nobj):
         _cid = nobj.current_user.cid
-
+        _pwd = nobj.current_user.pwd
         if (_cid in self.playerList.keys()):
             return self.playerList[nobj.current_user.cid]
 
         # 增加到socket连接用户列表
         self.nobjs.add(nobj)
         # 实例化一个玩家对象
-        puser = Player(nobj, nobj.current_user.uid, nobj.current_user.pwd, self.dbmanage)
+        puser = Player(nobj, _cid, _pwd, self.dbmanage)
         # 玩家列表增加玩家对象
-        self.playerList[nobj.current_user.cid] = puser
+        self.playerList[_cid] = puser
 
-        return self.playerList[nobj.current_user.cid]
+        return self.playerList[_cid]
 
     #根据连接对象返回玩家实例
     def GetPlayer(self, nobj):
