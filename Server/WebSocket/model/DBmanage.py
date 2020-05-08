@@ -144,8 +144,8 @@ class dbmanage():
     def Save_farmdata(self, _puser):
         sql = "UPDATE `player` set `plantdata` = '{0}',  `seeddata` = '{1}' where cid = {2} ;"
 
-        _plantdata = str(_puser.plantdata)
-        _seeddata = str(_puser.seeddata)
+        _plantdata = json.dumps(_puser.plantdata)
+        _seeddata = json.dumps(_puser.seeddata)
 
         sql = sql.format(_plantdata, _seeddata, _puser.cid)
         self.dbhelper.execute(sql)

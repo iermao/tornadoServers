@@ -10,12 +10,14 @@ class BaseUser(object):
         print("User  __init__")
         self.cid = cid
         self.pobj = _user
-        self.logintimes = time.time()
+        self.logintime = time.time()
+        self.logouttime = time.time()
         self.DBM = _DBM
 
         # 初始化数据
         self.initData()
-
+    def close(self):
+        self.logouttime = time.time()
     #初始化部分数据
     def initData(self):
         # 初始化玩家数据
