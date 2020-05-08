@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1001,
+    "name_cn": "5分钟",
+    "name_en": "5 min",
+    "time": 300,
+    "rewardType": 1,
+    "rewardPra": "[1000]",
+    "rewardPicPath": "tag_jb.png"
+  },
+  {
+    "id": 1002,
+    "name_cn": "15分钟",
+    "name_en": "15 min",
+    "time": 900,
+    "rewardType": 2,
+    "rewardPra": "[38]",
+    "rewardPicPath": "tag_zsh.png"
+  },
+  {
+    "id": 1003,
+    "name_cn": "30分钟",
+    "name_en": "30 min",
+    "time": 1800,
+    "rewardType": 5,
+    "rewardPra": "[1001,1009,10]",
+    "rewardPicPath": "tag_seed_c.png"
+  },
+  {
+    "id": 1004,
+    "name_cn": "60分钟",
+    "name_en": "60 min",
+    "time": 3600,
+    "rewardType": 2,
+    "rewardPra": "[52]",
+    "rewardPicPath": "tag_zsh.png"
+  },
+  {
+    "id": 1005,
+    "name_cn": "80分钟",
+    "name_en": "80 min",
+    "time": 4800,
+    "rewardType": 5,
+    "rewardPra": "[1010,1018,8]",
+    "rewardPicPath": "tag_seed_b.png"
+  },
+  {
+    "id": 1006,
+    "name_cn": "120分钟",
+    "name_en": "120 min",
+    "time": 7200,
+    "rewardType": 7,
+    "rewardPra": "[11001,13609,1]",
+    "rewardPicPath": "tag_dress_rand.png"
+  }
+]

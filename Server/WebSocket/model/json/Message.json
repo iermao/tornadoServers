@@ -1,0 +1,806 @@
+[
+  {
+    "id": 101001,
+    "name": "商店解锁文字",
+    "info_en": " Level To Unlock",
+    "info_cn": "级解锁"
+  },
+  {
+    "id": 101002,
+    "name": "金币不足提示",
+    "info_en": "Coins are not enough",
+    "info_cn": "没有足够的金币"
+  },
+  {
+    "id": 101003,
+    "name": "钻石不足提示",
+    "info_en": "Gems are not enough",
+    "info_cn": "没有足够的钻石"
+  },
+  {
+    "id": 101004,
+    "name": "前往商店按钮",
+    "info_en": "GoShop",
+    "info_cn": "前往商店"
+  },
+  {
+    "id": 101005,
+    "name": "看广告再领取388金币",
+    "info_en": "Watch Video For       388     ",
+    "info_cn": "看广告再领取       388"
+  },
+  {
+    "id": 101006,
+    "name": "购买失败",
+    "info_en": "Purchase Failed",
+    "info_cn": "购买失败"
+  },
+  {
+    "id": 101007,
+    "name": "观看视频",
+    "info_en": "Watch video",
+    "info_cn": "观看视频"
+  },
+  {
+    "id": 101008,
+    "name": "使用",
+    "info_en": "Use",
+    "info_cn": "使用"
+  },
+  {
+    "id": 101009,
+    "name": "观看视频失败",
+    "info_en": "Watch video failed",
+    "info_cn": "观看视频失败"
+  },
+  {
+    "id": 101010,
+    "name": "阶段",
+    "info_en": "Stage",
+    "info_cn": "阶段："
+  },
+  {
+    "id": 101011,
+    "name": "培育奖励",
+    "info_en": "Plant Reward",
+    "info_cn": "培育奖励："
+  },
+  {
+    "id": 101012,
+    "name": "状态",
+    "info_en": "Status",
+    "info_cn": "状态："
+  },
+  {
+    "id": 101013,
+    "name": "浇水",
+    "info_en": "Water",
+    "info_cn": "浇水"
+  },
+  {
+    "id": 101014,
+    "name": "倒计时",
+    "info_en": "Countdown",
+    "info_cn": "倒计时："
+  },
+  {
+    "id": 101015,
+    "name": "阶段奖励",
+    "info_en": "Reward",
+    "info_cn": "奖励"
+  },
+  {
+    "id": 101016,
+    "name": "已成熟",
+    "info_en": "Ripe",
+    "info_cn": "已成熟"
+  },
+  {
+    "id": 101017,
+    "name": "可召唤",
+    "info_en": "Summon",
+    "info_cn": "可召唤："
+  },
+  {
+    "id": 101018,
+    "name": "组件",
+    "info_en": "Pieces",
+    "info_cn": "组件"
+  },
+  {
+    "id": 101019,
+    "name": "金币召唤",
+    "info_en": "Coin Summoning",
+    "info_cn": "金币召唤："
+  },
+  {
+    "id": 101020,
+    "name": "钻石召唤",
+    "info_en": "Gem Summoning",
+    "info_cn": "钻石召唤："
+  },
+  {
+    "id": 101021,
+    "name": "成功率",
+    "info_en": "Success Rate",
+    "info_cn": "成功率"
+  },
+  {
+    "id": 101022,
+    "name": "稍后再去",
+    "info_en": "Later",
+    "info_cn": "稍后再去"
+  },
+  {
+    "id": 101023,
+    "name": "现在就去",
+    "info_en": "Now",
+    "info_cn": "现在就去"
+  },
+  {
+    "id": 101024,
+    "name": "继续培育",
+    "info_en": "Keep Growing",
+    "info_cn": "继续培育"
+  },
+  {
+    "id": 101025,
+    "name": "出售",
+    "info_en": "Sale",
+    "info_cn": "出售"
+  },
+  {
+    "id": 101026,
+    "name": "出售价格",
+    "info_en": "Sale Price",
+    "info_cn": "出售价格："
+  },
+  {
+    "id": 101027,
+    "name": "召唤失败",
+    "info_en": "Summon Failed. Extensive planting can increase success rate.",
+    "info_cn": "十分抱歉，没能召唤组件，大面积种植此类花朵可以提高成功率哟！"
+  },
+  {
+    "id": 101028,
+    "name": "召唤成功1",
+    "info_en": "Congratulations, summon successfully!",
+    "info_cn": "恭喜你成功召唤"
+  },
+  {
+    "id": 101029,
+    "name": "召唤成功2",
+    "info_en": "piece.Go and change this in dressing room",
+    "info_cn": "组件。赶紧去换衣间换上吧！"
+  },
+  {
+    "id": 101030,
+    "name": "重复召唤1",
+    "info_en": "You have collected ",
+    "info_cn": "你已拥有"
+  },
+  {
+    "id": 101031,
+    "name": "重复召唤2",
+    "info_en": ",You can sale it",
+    "info_cn": "了，这件可以出售哟！"
+  },
+  {
+    "id": 101032,
+    "name": "获得",
+    "info_en": "Get",
+    "info_cn": "获得"
+  },
+  {
+    "id": 101033,
+    "name": "金币",
+    "info_en": "Coin",
+    "info_cn": "金币"
+  },
+  {
+    "id": 101034,
+    "name": "钻石",
+    "info_en": "Gem",
+    "info_cn": "钻石"
+  },
+  {
+    "id": 101035,
+    "name": "经验",
+    "info_en": "Exp",
+    "info_cn": "经验"
+  },
+  {
+    "id": 101036,
+    "name": "套装内拥有部件已为你转化为：",
+    "info_en": "The suits pieces have been transformed into",
+    "info_cn": "套装内拥有部件已为你转化为："
+  },
+  {
+    "id": 101037,
+    "name": "等级",
+    "info_en": "Level",
+    "info_cn": "等级："
+  },
+  {
+    "id": 101038,
+    "name": "称号",
+    "info_en": "Name",
+    "info_cn": "称号"
+  },
+  {
+    "id": 101039,
+    "name": "称号解锁",
+    "info_en": "  Level To Unlock",
+    "info_cn": "级时解锁"
+  },
+  {
+    "id": 101040,
+    "name": "已满级",
+    "info_en": "Full Level",
+    "info_cn": "已满级"
+  },
+  {
+    "id": 101041,
+    "name": "评价",
+    "info_en": "Rate",
+    "info_cn": "评价"
+  },
+  {
+    "id": 101042,
+    "name": "分享",
+    "info_en": "Share",
+    "info_cn": "分享"
+  },
+  {
+    "id": 101043,
+    "name": "完成列表任务显示任务获得：",
+    "info_en": "Complete all mission ",
+    "info_cn": "完成列表任务显示任务获得："
+  },
+  {
+    "id": 101044,
+    "name": "完成进度：",
+    "info_en": "Schedule",
+    "info_cn": "完成进度："
+  },
+  {
+    "id": 101045,
+    "name": "奖励：",
+    "info_en": "Reward",
+    "info_cn": "奖励："
+  },
+  {
+    "id": 101046,
+    "name": "在线时间：",
+    "info_en": "Online Time:",
+    "info_cn": "在线时间："
+  },
+  {
+    "id": 101047,
+    "name": "今日已完成",
+    "info_en": "Today completed",
+    "info_cn": "今日已完成"
+  },
+  {
+    "id": 101048,
+    "name": "您种植的",
+    "info_en": "Planted ",
+    "info_cn": "您种植的"
+  },
+  {
+    "id": 101049,
+    "name": "产生了变异",
+    "info_en": " Changed",
+    "info_cn": "产生了变异"
+  },
+  {
+    "id": 101050,
+    "name": "知道了",
+    "info_en": "Know",
+    "info_cn": "知道了"
+  },
+  {
+    "id": 101051,
+    "name": "恭喜升级啦！",
+    "info_en": "Congratulations, level up!",
+    "info_cn": "恭喜升级啦！"
+  },
+  {
+    "id": 101052,
+    "name": "此部件已拥有为你转化为：",
+    "info_en": "The collected piece have been transformed into ",
+    "info_cn": "此部件已拥有为你转化为："
+  },
+  {
+    "id": 101053,
+    "name": "奖励套装已全部拥有",
+    "info_en": "All rewarded suits have been collected",
+    "info_cn": "奖励套装已全部拥有"
+  },
+  {
+    "id": 101054,
+    "name": "保存穿搭",
+    "info_en": "The new outfit has been saved. Go album to check and dress",
+    "info_cn": "保存新的穿搭，可以前往图鉴查看和穿戴"
+  },
+  {
+    "id": 101055,
+    "name": "保存穿搭数量已满",
+    "info_en": "Your closet is full",
+    "info_cn": "你的衣柜已满"
+  },
+  {
+    "id": 101056,
+    "name": "穿搭已经保存",
+    "info_en": "The outfit has existed",
+    "info_cn": "此穿搭已存在"
+  },
+  {
+    "id": 101057,
+    "name": "我的穿搭",
+    "info_en": "My outfits",
+    "info_cn": "我的穿搭"
+  },
+  {
+    "id": 101058,
+    "name": "主题模特解锁",
+    "info_en": "Level Unlock",
+    "info_cn": "级解锁"
+  },
+  {
+    "id": 101059,
+    "name": "主题模特未开始",
+    "info_en": "Start",
+    "info_cn": "开启"
+  },
+  {
+    "id": 101060,
+    "name": "主题模特已经开启",
+    "info_en": "Opening",
+    "info_cn": "进行中"
+  },
+  {
+    "id": 101061,
+    "name": "主题模式未达到获奖条件",
+    "info_en": "You are unmet the condition for reward this time.",
+    "info_cn": "本次活动未达到获奖条件"
+  },
+  {
+    "id": 101062,
+    "name": "主题模式未达到获奖条件",
+    "info_en": "You are unmet the condition for reward last time.",
+    "info_cn": "上次活动未达到获奖条件"
+  },
+  {
+    "id": 101063,
+    "name": "主题完成度",
+    "info_en": "Theme completion of this time",
+    "info_cn": "本次主题完成度"
+  },
+  {
+    "id": 101064,
+    "name": "主题完成度",
+    "info_en": "Theme completion of last time",
+    "info_cn": "上次主题完成度"
+  },
+  {
+    "id": 101065,
+    "name": "看视频",
+    "info_en": "Watch the video for coins!",
+    "info_cn": "观看视频获取随机金币奖励！"
+  },
+  {
+    "id": 101066,
+    "name": "小游戏",
+    "info_en": "Play mini games for coins!",
+    "info_cn": "玩小游戏获取随机金币奖励！"
+  },
+  {
+    "id": 101067,
+    "name": "免费",
+    "info_en": "Free",
+    "info_cn": "免费"
+  },
+  {
+    "id": 101068,
+    "name": "声望",
+    "info_en": "Fame",
+    "info_cn": "声望"
+  },
+  {
+    "id": 101069,
+    "name": "公主",
+    "info_en": "Princess",
+    "info_cn": "公主"
+  },
+  {
+    "id": 101070,
+    "name": "皇后",
+    "info_en": "Queen",
+    "info_cn": "皇后"
+  },
+  {
+    "id": 101071,
+    "name": "精灵",
+    "info_en": "Elf",
+    "info_cn": "精灵"
+  },
+  {
+    "id": 101072,
+    "name": "仙子",
+    "info_en": "Fairy",
+    "info_cn": "仙子"
+  },
+  {
+    "id": 101073,
+    "name": "图片已保存至本地相册",
+    "info_en": "The image has been saved!",
+    "info_cn": "图片已保存至本地相册"
+  },
+  {
+    "id": 101074,
+    "name": "我正在玩“花花公主”！快来加入吧！",
+    "info_en": "I'm addictive for 'Garden?&?Dressup?-?Flower?Princess?Fairytale'! Come on and play with me!",
+    "info_cn": "我正在玩“魔法花园换装 - 百变花花仙子\n”！快来加入吧！"
+  },
+  {
+    "id": 101075,
+    "name": "确定删除此穿搭吗？",
+    "info_en": "Are you sure to delete this outfit?",
+    "info_cn": "确定删除此穿搭吗？"
+  },
+  {
+    "id": 101076,
+    "name": "开启图鉴",
+    "info_en": " ALBUM has been unlocked",
+    "info_cn": "图鉴功能已开启"
+  },
+  {
+    "id": 101077,
+    "name": "开启成就",
+    "info_en": "ACHIEVE has been unlocked",
+    "info_cn": "成就功能已开启"
+  },
+  {
+    "id": 101078,
+    "name": "开启场景",
+    "info_en": "SCENE has been unlocked",
+    "info_cn": "场景选择功能已开启"
+  },
+  {
+    "id": 101079,
+    "name": "开启幸运转盘",
+    "info_en": "LUCKY SPIN has been unlocked",
+    "info_cn": "幸运转盘功能已开启"
+  },
+  {
+    "id": 101080,
+    "name": "开启主题模特",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "主题模特功能已开启"
+  },
+  {
+    "id": 101081,
+    "name": "皇后效果",
+    "info_en": "Reduce 10% planting time every stage",
+    "info_cn": "每个阶段种植时间减少10%"
+  },
+  {
+    "id": 101082,
+    "name": "精灵效果",
+    "info_en": "Reduce 20% planting time every stage, increase 10% summon successful rate",
+    "info_cn": "每个阶段种植时间减少20%，召唤成功率增加10%"
+  },
+  {
+    "id": 101083,
+    "name": "仙子效果",
+    "info_en": "Reduce 30% planting time every stage, increase 20% summon successful rate,coin summon is free ",
+    "info_cn": "每个阶段种植时间减少30%，召唤成功率增加20%，金币召唤变为免费召唤"
+  },
+  {
+    "id": 101084,
+    "name": "声望升级",
+    "info_en": "Fame level to ",
+    "info_cn": "声望已升级到"
+  },
+  {
+    "id": 101085,
+    "name": "已集齐",
+    "info_en": "Collected",
+    "info_cn": "已集齐"
+  },
+  {
+    "id": 101086,
+    "name": "图鉴功能介绍",
+    "info_en": "Plants, outfits and scenes you collected will be shown here",
+    "info_cn": "植物，装扮，还有收集的场景都会在这里展示哦。"
+  },
+  {
+    "id": 101087,
+    "name": "成就功能介绍",
+    "info_en": "Achievement you got will be shown here.",
+    "info_cn": "随时查看，这里记录着你在花园中所达成的内容。"
+  },
+  {
+    "id": 101088,
+    "name": "场景选择功能介绍",
+    "info_en": "Different beautiful scenes you unlocked will be shown here.",
+    "info_cn": "你可以在这里为你的花地和试衣间选择更多漂亮场景哦。"
+  },
+  {
+    "id": 101089,
+    "name": "转盘功能介绍",
+    "info_en": "Here you can spin the LUCKY SPIN everyday!",
+    "info_cn": "每天都可以来这里试试运气！"
+  },
+  {
+    "id": 101090,
+    "name": "主题模特功能介绍",
+    "info_en": "Design your own outfits comply the theme to win jackpot!",
+    "info_cn": "设计自己的穿搭以符合主题，赢取丰厚奖励。"
+  },
+  {
+    "id": 101091,
+    "name": "新一轮的模特大赛已经开始！",
+    "info_en": "The new model competition has started!",
+    "info_cn": "新一轮的模特大赛已经开始！"
+  },
+  {
+    "id": 101092,
+    "name": "转盘功能8级开启",
+    "info_en": "Level 8 to unlock LUCKY?SPIN",
+    "info_cn": "转盘功能8级开启"
+  },
+  {
+    "id": 101093,
+    "name": "是否前往商城购买？",
+    "info_en": "Are you sure to go shop for purchasing?",
+    "info_cn": "是否前往商城购买？"
+  },
+  {
+    "id": 101094,
+    "name": "解锁",
+    "info_en": " Unlock",
+    "info_cn": "解锁"
+  },
+  {
+    "id": 101095,
+    "name": "转换",
+    "info_en": " transformed ",
+    "info_cn": "转换"
+  },
+  {
+    "id": 101096,
+    "name": "看视频",
+    "info_en": "Video is not ready, please try again later.",
+    "info_cn": "暂时无法播放，请稍后再试"
+  },
+  {
+    "id": 101097,
+    "name": "分享",
+    "info_en": "Active,elegant or beautiful, which one is your favorite? Come here and dress the garden princess up!",
+    "info_cn": "是青春靓丽，还是奢华高雅，亦或雍容华贵，快来花花仙子，种植你心中的花中仙子吧！"
+  },
+  {
+    "id": 101098,
+    "name": "称号不足",
+    "info_en": "You can't unlock this land in this stage.Please keep planting to level up!",
+    "info_cn": "您的称号等级不符合土地开垦条件，请继续种植提升您的等级！"
+  },
+  {
+    "id": 101099,
+    "name": "称号条件不足",
+    "info_en": "The land is not available.",
+    "info_cn": "土地开垦条件不足"
+  },
+  {
+    "id": 101100,
+    "name": "金币不足",
+    "info_en": "Coins is not enough. Go store for more coins?",
+    "info_cn": "土地开垦需要的金币不够，是否去商店购买更多的金币"
+  },
+  {
+    "id": 101101,
+    "name": "钻石不足",
+    "info_en": "Gem is not enough. Go store for more gems?",
+    "info_cn": "土地开垦需要的钻石不够，是否去商店购买更多的钻石"
+  },
+  {
+    "id": 101102,
+    "name": "商店介绍引导",
+    "info_en": "Purchase various seeds in store to summon kinds of styles clothes.",
+    "info_cn": "商店可以购买各式各样的种子，来获得不同风格的装扮。"
+  },
+  {
+    "id": 101103,
+    "name": "任务引导介绍",
+    "info_en": "You can buy gems in store or get extra gems after completing daily mission.",
+    "info_cn": "钻石不足可以在商店购买，也可以完成每日任务获取额外的钻石哦"
+  },
+  {
+    "id": 101104,
+    "name": "开启图鉴",
+    "info_en": " ALBUM has been unlocked",
+    "info_cn": "图鉴功能已开启，您可以去看看哦！"
+  },
+  {
+    "id": 101105,
+    "name": "开启成就",
+    "info_en": "ACHIEVE has been unlocked",
+    "info_cn": "成就功能已开启，您可以去看看哦！"
+  },
+  {
+    "id": 101106,
+    "name": "开启场景",
+    "info_en": "SCENE has been unlocked",
+    "info_cn": "场景选择功能已开启，您可以去看看哦！"
+  },
+  {
+    "id": 101107,
+    "name": "开启幸运转盘",
+    "info_en": "LUCKY SPIN has been unlocked",
+    "info_cn": "幸运转盘功能已开启，您可以去看看哦！"
+  },
+  {
+    "id": 101108,
+    "name": "开启主题模特",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "主题模特功能已开启，您可以去看看哦！"
+  },
+  {
+    "id": 101109,
+    "name": "无法打开应用商店",
+    "info_en": "APP store is not  available",
+    "info_cn": "暂时无法打开应用商店，请稍候再试"
+  },
+  {
+    "id": 101110,
+    "name": "该计费暂不可用",
+    "info_en": "this purchase is not available",
+    "info_cn": "该计费暂不可用"
+  },
+  {
+    "id": 101111,
+    "name": "兑换码不能为空",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "兑换码不能为空"
+  },
+  {
+    "id": 101112,
+    "name": "还差",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "还差"
+  },
+  {
+    "id": 101113,
+    "name": "元可去除弹出式广告",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "元可去除弹出式广告！"
+  },
+  {
+    "id": 101114,
+    "name": "视频正在缓冲，请稍后再试...",
+    "info_en": "The video is not available,please try again later...",
+    "info_cn": "视频正在缓冲，请稍后再试..."
+  },
+  {
+    "id": 101115,
+    "name": "未安装手Q或安装的版本不支持",
+    "info_en": "THEME MODEL has been unlocked",
+    "info_cn": "未安装手机QQ或安装的版本不支持"
+  },
+  {
+    "id": 101116,
+    "name": "图鉴功能介绍",
+    "info_en": "Plants, outfits and scenes you collected will be shown here",
+    "info_cn": "植物，装扮，还有收集的场景都会在图鉴功能里展示哦。"
+  },
+  {
+    "id": 102001,
+    "name": "称号名称1",
+    "info_en": "Apprentice",
+    "info_cn": "初级花匠"
+  },
+  {
+    "id": 102002,
+    "name": "称号名称2",
+    "info_en": "Profession",
+    "info_cn": "中级花匠"
+  },
+  {
+    "id": 102003,
+    "name": "称号名称3",
+    "info_en": "Expert",
+    "info_cn": "高级花匠"
+  },
+  {
+    "id": 103001,
+    "name": "新手引导步骤1",
+    "info_en": "Hi, welcome to the magic garden? Please follow me!",
+    "info_cn": "你好，第一次来到魔法花园？请跟我来！"
+  },
+  {
+    "id": 103002,
+    "name": "新手引导步骤2",
+    "info_en": "This is your own garden, let's sow the Clover.",
+    "info_cn": "这里是花地，让我们撒下四叶草的种子。"
+  },
+  {
+    "id": 103003,
+    "name": "新手引导步骤3",
+    "info_en": "Now, you can water for the Clover seed and speed it up.",
+    "info_cn": "现在为四叶草浇水，助它生长。"
+  },
+  {
+    "id": 103004,
+    "name": "新手引导步骤4",
+    "info_en": "Tap to collect coins and keep it growing.",
+    "info_cn": "点击收获金币，进行下一阶段成长。"
+  },
+  {
+    "id": 103005,
+    "name": "新手引导步骤5",
+    "info_en": "Oh, the Clover is ripe! You can summon a new piece of suit.",
+    "info_cn": "哇！四叶草成熟啦！用仙子的能量召唤它吧！"
+  },
+  {
+    "id": 103006,
+    "name": "新手引导步骤6",
+    "info_en": "Congratulations, you get a new clothes.",
+    "info_cn": "恭喜你获得了新的服饰！"
+  },
+  {
+    "id": 103007,
+    "name": "新手引导步骤7",
+    "info_en": "Now dress up the fairy with new clothes.",
+    "info_cn": "现在就装扮上刚刚获得的服饰吧！"
+  },
+  {
+    "id": 103008,
+    "name": "完成引导",
+    "info_en": "Guide completed! Start your journey in the magic world!",
+    "info_cn": "完成引导！欢迎来到魔法花园的世界！"
+  },
+  {
+    "id": 103009,
+    "name": "金币召唤引导",
+    "info_en": "You can use coins or gems to summon the clothes, and they have different successful rate.",
+    "info_cn": "有两种召唤方式，金币召唤和钻石召唤，它们的成功率不一样哦！"
+  },
+  {
+    "id": 103010,
+    "name": "金币召唤引导",
+    "info_en": "Watch the video to reduce the plant time.",
+    "info_cn": "观看视频可以减少种植时间哦！"
+  },
+  {
+    "id": 103011,
+    "name": "除草引导",
+    "info_en": "Oh，the flower was grown with weeds. Use the herbicides for removing it now! If you don't use herbicides, the probablity of getting clothes will reduce by 5%.",
+    "info_cn": "哎呀，花田里长了杂草，快用灭草剂吧 ！如果没有除草的话，会降低5%的衣服召唤成功率哦"
+  },
+  {
+    "id": 103012,
+    "name": "除虫引导",
+    "info_en": "Oh, the flower was grown with pests. Use the insecticide for killing them now! If you don't use insecticide, the probablity of getting clothes will reduce by 5%.",
+    "info_cn": "哎呀，花田里有虫子了，快用除虫剂吧 如果没有除虫的话，会降低5%的衣服召唤成功率哦"
+  },
+  {
+    "id": 104001,
+    "name": "是否花费",
+    "info_en": "Do you cost",
+    "info_cn": "是否花费"
+  },
+  {
+    "id": 104002,
+    "name": "购买",
+    "info_en": "to Buy",
+    "info_cn": "购买"
+  },
+  {
+    "id": 104003,
+    "name": "本期幸运植物",
+    "info_en": "Lucky Plant This Period:",
+    "info_cn": "本期幸运植物:"
+  }
+]

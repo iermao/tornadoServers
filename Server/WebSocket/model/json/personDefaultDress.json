@@ -1,0 +1,47 @@
+[
+  {
+    "partTag": 1,
+    "slotName": "toufa01,toufa06",
+    "slotRes": "c_001_toufa01.png,c_001_toufa06.png"
+  },
+  {
+    "partTag": 2,
+    "slotName": "null",
+    "slotRes": "null"
+  },
+  {
+    "partTag": 3,
+    "slotName": "eye",
+    "slotRes": "c_001_eye.png"
+  },
+  {
+    "partTag": 4,
+    "slotName": "q1,q17,q19",
+    "slotRes": "c_001_q1.png,c_001_q17.png,c_001_q19.png"
+  },
+  {
+    "partTag": 5,
+    "slotName": "xie01,xie02",
+    "slotRes": "c_001_xie01.png,c_001_xie02.png"
+  },
+  {
+    "partTag": 6,
+    "slotName": "null",
+    "slotRes": "null"
+  },
+  {
+    "partTag": 7,
+    "slotName": "null",
+    "slotRes": "null"
+  },
+  {
+    "partTag": 8,
+    "slotName": "null",
+    "slotRes": "null"
+  },
+  {
+    "partTag": 9,
+    "slotName": "null",
+    "slotRes": "null"
+  }
+]

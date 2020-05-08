@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1001,
+    "name_cn": "除草剂",
+    "name_en": "Herbicide",
+    "iconRes1_cn": "res/pic/newAdd/yaoji/cn/btn_yaoji_chucao.png",
+    "iconRes1_en": "res/pic/newAdd/yaoji/btn_yaoji_chucao.png",
+    "iconRes2_cn": "res/pic/newAdd/yaoji/cn/tag_buy_chucao.png",
+    "iconRes2_en": "res/pic/newAdd/yaoji/tag_buy_chucao.png",
+    "buyType": 2,
+    "price": 5,
+    "yaoshuiInfo_cn": "当花田里长了杂草，使用除草剂可以除掉杂草！",
+    "yaoshuiInfo_en": "If the flower was grown with weeds. Use the herbicides for removing it!"
+  },
+  {
+    "id": 1002,
+    "name_cn": "除虫剂",
+    "name_en": "Insecticide",
+    "iconRes1_cn": "res/pic/newAdd/yaoji/btn_yaoji_chuchong.png",
+    "iconRes1_en": "res/pic/newAdd/yaoji/btn_yaoji_chuchong.png",
+    "iconRes2_cn": "res/pic/newAdd/yaoji/cn/tag_buy_chuchong.png",
+    "iconRes2_en": "res/pic/newAdd/yaoji/tag_buy_chuchong.png",
+    "buyType": 2,
+    "price": 5,
+    "yaoshuiInfo_cn": "当花田里面有虫子，使用除虫剂可以除掉害虫！",
+    "yaoshuiInfo_en": "If the flower was grown with pests. Use the insecticide for killing them!"
+  }
+]

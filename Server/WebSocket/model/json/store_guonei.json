@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "钻石60",
+    "price": 6,
+    "AndroidKey": "com.taphappy.gardendressup.free.item1",
+    "Desc": "获得钻石60"
+  },
+  {
+    "id": 2,
+    "name": "钻石200",
+    "price": 18,
+    "AndroidKey": "com.taphappy.gardendressup.free.item2",
+    "Desc": "获得钻石200"
+  },
+  {
+    "id": 3,
+    "name": "钻石340",
+    "price": 30,
+    "AndroidKey": "com.taphappy.gardendressup.free.item3",
+    "Desc": "获得钻石340"
+  },
+  {
+    "id": 4,
+    "name": "钻石740",
+    "price": 60,
+    "AndroidKey": "com.taphappy.gardendressup.free.item4",
+    "Desc": "获得钻石740"
+  },
+  {
+    "id": 5,
+    "name": "钻石1400",
+    "price": 120,
+    "AndroidKey": "com.taphappy.gardendressup.free.item5",
+    "Desc": "获得钻石1400"
+  },
+  {
+    "id": 6,
+    "name": "破冰礼包",
+    "price": 1,
+    "AndroidKey": "com.taphappy.gardendressup.free.item7",
+    "Desc": "金币1500，任意一种S级种子2颗"
+  },
+  {
+    "id": 7,
+    "name": "新手起航礼包",
+    "price": 6,
+    "AndroidKey": "com.taphappy.gardendressup.free.item8",
+    "Desc": "任意2种C级、B级种子，每种6颗"
+  },
+  {
+    "id": 8,
+    "name": "稀有种子礼包",
+    "price": 18,
+    "AndroidKey": "com.taphappy.gardendressup.free.item9",
+    "Desc": "任意3种A级种子，每种8颗"
+  },
+  {
+    "id": 9,
+    "name": "混合种子礼包",
+    "price": 25,
+    "AndroidKey": "com.taphappy.gardendressup.free.item10",
+    "Desc": "任意4种C、B、A、S级种子，每种10颗"
+  },
+  {
+    "id": 10,
+    "name": "随机套装礼包",
+    "price": 48,
+    "AndroidKey": "com.taphappy.gardendressup.free.item11",
+    "Desc": "随机得到任意一套A级或A级以上套装"
+  }
+]

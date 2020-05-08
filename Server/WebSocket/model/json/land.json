@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1001,
+    "name_cn": "土地1",
+    "name_en": "Land 1",
+    "unlockfame": 0,
+    "unlocktype": 0,
+    "unlocknumber": 0,
+    "unlocknumber2": 0,
+    "info_cn": "土地描述",
+    "info_en": "Description"
+  },
+  {
+    "id": 1002,
+    "name_cn": "土地2",
+    "name_en": "Land 2",
+    "unlockfame": 0,
+    "unlocktype": 0,
+    "unlocknumber": 0,
+    "unlocknumber2": 0,
+    "info_cn": "土地描述",
+    "info_en": "Description"
+  },
+  {
+    "id": 1003,
+    "name_cn": "土地3",
+    "name_en": "Land 3",
+    "unlockfame": 0,
+    "unlocktype": 0,
+    "unlocknumber": 0,
+    "unlocknumber2": 0,
+    "info_cn": "土地描述",
+    "info_en": "Description"
+  },
+  {
+    "id": 1004,
+    "name_cn": "土地4",
+    "name_en": "Land 4",
+    "unlockfame": 0,
+    "unlocktype": 0,
+    "unlocknumber": 0,
+    "unlocknumber2": 0,
+    "info_cn": "土地描述",
+    "info_en": "Description"
+  },
+  {
+    "id": 1005,
+    "name_cn": "干枯的土地",
+    "name_en": "Dead Land",
+    "unlockfame": 1,
+    "unlocktype": 2,
+    "unlocknumber": 12000,
+    "unlocknumber2": 0,
+    "info_cn": "这块土地已经干枯了,需要使用魔法药水让它重获新机。",
+    "info_en": "The land is dead, you can use magic water to make it rivive."
+  },
+  {
+    "id": 1006,
+    "name_cn": "干枯的土地",
+    "name_en": "Dead Land",
+    "unlockfame": 2,
+    "unlocktype": 2,
+    "unlocknumber": 24000,
+    "unlocknumber2": 0,
+    "info_cn": "这块土地已经干枯了,需要使用魔法药水让它重获新机。",
+    "info_en": "The land is dead, you can use magic water to make it rivive."
+  },
+  {
+    "id": 1007,
+    "name_cn": "干枯的土地",
+    "name_en": "Dead Land",
+    "unlockfame": 2,
+    "unlocktype": 3,
+    "unlocknumber": 536,
+    "unlocknumber2": 0,
+    "info_cn": "这块土地已经干枯了,需要使用魔法药水让它重获新机。",
+    "info_en": "The land is dead, you can use magic water to make it rivive."
+  },
+  {
+    "id": 1008,
+    "name_cn": "干枯的土地",
+    "name_en": "Dead Land",
+    "unlockfame": 3,
+    "unlocktype": 3,
+    "unlocknumber": 804,
+    "unlocknumber2": 0,
+    "info_cn": "这块土地已经干枯了,需要使用魔法药水让它重获新机。",
+    "info_en": "The land is dead, you can use magic water to make it rivive."
+  }
+]

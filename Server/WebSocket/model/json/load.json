@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "type": 1,
+    "resPath_cn": "res/pic/load/bg_load_01.png",
+    "resPath_en": "res/pic/load/bg_load_01.png"
+  },
+  {
+    "id": 2,
+    "type": 1,
+    "resPath_cn": "res/pic/load/bg_load_02.png",
+    "resPath_en": "res/pic/load/bg_load_02.png"
+  },
+  {
+    "id": 3,
+    "type": 1,
+    "resPath_cn": "res/pic/load/bg_load_03.png",
+    "resPath_en": "res/pic/load/bg_load_03.png"
+  },
+  {
+    "id": 4,
+    "type": 1,
+    "resPath_cn": "res/pic/load/bg_load_04.png",
+    "resPath_en": "res/pic/load/bg_load_04.png"
+  },
+  {
+    "id": 5,
+    "type": 1,
+    "resPath_cn": "res/pic/load/bg_load_05.png",
+    "resPath_en": "res/pic/load/bg_load_05.png"
+  }
+]

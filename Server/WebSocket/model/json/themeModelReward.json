@@ -1,0 +1,22 @@
+[
+  {
+    "id": 10001,
+    "compNum": 30,
+    "rewardJbNum": 520
+  },
+  {
+    "id": 10002,
+    "compNum": 50,
+    "rewardJbNum": 840
+  },
+  {
+    "id": 10003,
+    "compNum": 80,
+    "rewardJbNum": 1160
+  },
+  {
+    "id": 10004,
+    "compNum": 100,
+    "rewardJbNum": 1480
+  }
+]

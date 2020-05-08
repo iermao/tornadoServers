@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "day": 1,
+    "rewardType": 1,
+    "rewardRes": "common/tag_jb.png",
+    "rewardPra": "[520]"
+  },
+  {
+    "id": 2,
+    "day": 2,
+    "rewardType": 2,
+    "rewardRes": "common/tag_zsh.png",
+    "rewardPra": "[28]"
+  },
+  {
+    "id": 3,
+    "day": 3,
+    "rewardType": 5,
+    "rewardRes": "form/sign/signRewardTag_03.png",
+    "rewardPra": "[1010,1018,8]"
+  },
+  {
+    "id": 4,
+    "day": 4,
+    "rewardType": 1,
+    "rewardRes": "common/tag_jb.png",
+    "rewardPra": "[680]"
+  },
+  {
+    "id": 5,
+    "day": 5,
+    "rewardType": 2,
+    "rewardRes": "common/tag_zsh.png",
+    "rewardPra": "[32]"
+  },
+  {
+    "id": 6,
+    "day": 6,
+    "rewardType": 5,
+    "rewardRes": "form/sign/signRewardTag_06.png",
+    "rewardPra": "[1019,1026,4]"
+  },
+  {
+    "id": 7,
+    "day": 7,
+    "rewardType": 7,
+    "rewardRes": "form/sign/signRewardTag_07.png",
+    "rewardPra": "[10101,12609,1]"
+  }
+]

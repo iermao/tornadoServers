@@ -1,0 +1,72 @@
+[
+  {
+    "id": 10001,
+    "bgResPath": "themebg_01.png",
+    "wordColore": "245,121,46,255,2",
+    "name_en": "Splendid",
+    "name_cn": "华丽"
+  },
+  {
+    "id": 10002,
+    "bgResPath": "themebg_02.png",
+    "wordColore": "113,163,176,255,2",
+    "name_en": "Simple",
+    "name_cn": "简约"
+  },
+  {
+    "id": 10003,
+    "bgResPath": "themebg_03.png",
+    "wordColore": "230,99,88,255,2",
+    "name_en": "Ripe",
+    "name_cn": "成熟"
+  },
+  {
+    "id": 10004,
+    "bgResPath": "themebg_04.png",
+    "wordColore": "247,119,146,255,2",
+    "name_en": "Cute",
+    "name_cn": "可爱"
+  },
+  {
+    "id": 10005,
+    "bgResPath": "themebg_05.png",
+    "wordColore": "249,147,97,255,2",
+    "name_en": "Warm",
+    "name_cn": "保暖"
+  },
+  {
+    "id": 10006,
+    "bgResPath": "themebg_06.png",
+    "wordColore": "94,226,246,255,2",
+    "name_en": "Fresh",
+    "name_cn": "清凉"
+  },
+  {
+    "id": 10007,
+    "bgResPath": "themebg_07.png",
+    "wordColore": "212,119,247,255,2",
+    "name_en": "Elegant",
+    "name_cn": "优雅"
+  },
+  {
+    "id": 10008,
+    "bgResPath": "themebg_08.png",
+    "wordColore": "238,181,83,255,2",
+    "name_en": "Lively",
+    "name_cn": "活泼"
+  },
+  {
+    "id": 10009,
+    "bgResPath": "themebg_09.png",
+    "wordColore": "246,94,226,255,2",
+    "name_en": "Hot",
+    "name_cn": "性感"
+  },
+  {
+    "id": 10010,
+    "bgResPath": "themebg_10.png",
+    "wordColore": "122,238,204,255,2",
+    "name_en": "Pure",
+    "name_cn": "清纯"
+  }
+]

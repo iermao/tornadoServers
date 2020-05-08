@@ -1,0 +1,13 @@
+[
+  {
+    "id": 10001,
+    "name": "ceshi",
+    "type": 1,
+    "imgPath_CN": "res/",
+    "imgPath_EN": "res/",
+    "shouldScale": 0,
+    "scale": 0,
+    "shouldPos": 1,
+    "pos": "[10000,20000]"
+  }
+]
