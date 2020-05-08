@@ -119,4 +119,7 @@ class game():
         print("close")
         if (nobj in self.nobjs):
             self.nobjs.remove(nobj)
+            puser = self.playerList[nobj.current_user.cid]
+            if (puser != None):
+                puser.SaveData()
             self.DelPlayerList(nobj)

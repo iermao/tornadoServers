@@ -98,7 +98,7 @@ class dbmanage():
     # 初始化---当前衣服物品数据
     def initDressData(self, _data):
         if (_data == ""):
-            return []
+            return [10101]
         else:
             return eval(_data)
 
@@ -124,3 +124,29 @@ class dbmanage():
             return {10001: 10}
         else:
             return eval(_data)
+
+    #保存玩家基础数据
+    def Save_BaseData(self, _puser):
+
+        sql = "UPDATE `player` set `logintime` = {0},  `logouttime` = {1}, `level` = {2},  `exp` = {3},  `gamemoney` = {4},  `paymoney` = {5}  where cid = {6} ;"
+        sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid)
+        self.dbhelper.execute(sql)
+
+    def Save_homedata(self, _puser):
+        sql = "UPDATE `player` set `suitdata` = '{0}',  `dressdata` = '{1}' where cid = {2} ;"
+
+        _suitdata = str(_puser.suitdata)
+        _dressdata = str(_puser.dressdata)
+
+        sql = sql.format(_suitdata, _dressdata, _puser.cid)
+        self.dbhelper.execute(sql)
+
+    def Save_farmdata(self, _puser):
+        sql = "UPDATE `player` set `plantdata` = '{0}',  `seeddata` = '{1}' where cid = {2} ;"
+
+        _plantdata = str(_puser.plantdata)
+        _seeddata = str(_puser.seeddata)
+
+        sql = sql.format(_plantdata, _seeddata, _puser.cid)
+        self.dbhelper.execute(sql)
+        pass

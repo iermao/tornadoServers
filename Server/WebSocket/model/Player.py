@@ -70,6 +70,11 @@ class Player(BaseUser, SuitData):
         _msg = {"id": MsgDefine.USER_MSG_SEEDDATA, "data": self.seeddata}
         self.pobj.write_message(_msg)
 
+    def SaveData(self):
+        self.DBM.Save_BaseData(self)
+        self.DBM.Save_homedata(self)
+        self.DBM.Save_farmdata(self)
+
     # 升级
     def Leveliup(self, _addlevel):
         self.nLelve += _addlevel
