@@ -90,7 +90,7 @@ class game():
     # 删除玩家实例
     def DelPlayerList(self, nobj):
         if (nobj.current_user.cid in self.playerList.keys()):
-            self.playerList.remove(nobj.current_user.cid)
+            self.playerList.pop(nobj.current_user.cid)
             return True
         return False
 
@@ -119,3 +119,4 @@ class game():
         print("close")
         if (nobj in self.nobjs):
             self.nobjs.remove(nobj)
+            self.DelPlayerList(nobj)
