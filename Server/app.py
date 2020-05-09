@@ -22,7 +22,7 @@ from . import urls
 
 class app():
     def __init__(self):
-        print("app __ini__")
+        # print("app __ini__")
         self.AppStart()
 
     def AppStart(self):

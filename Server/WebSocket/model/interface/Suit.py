@@ -1,10 +1,10 @@
 import json
 import time
 
-from . import MsgDefine
+from Server.WebSocket.model import MsgDefine
 
 
-class SuitData():
+class Suit():
 
     # 当前穿搭数据
     suitdata = []

@@ -2,7 +2,7 @@
 import json
 import time
 
-from . import MsgDefine
+from Server.WebSocket.model import MsgDefine
 
 # 用户基础对象
 class BaseUser(object):

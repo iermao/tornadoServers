@@ -6,20 +6,23 @@ import hashlib
 from .model.Player import Player
 from .model.DBmanage import dbmanage
 
+from .model import ConfigData
+
 MSG_STARTGAME = 10001
 
 
 # 游戏管理
 class game():
     def __init__(self):
-        print("Game  __init__")
+        # print("Game  __init__")
         # 所有连接进来的网络对象
         self.nobjs = set()
         # 创建的玩家字典
         self.playerList = dict()
         # 实例化数据库连接对象
         self.dbmanage = dbmanage()
-        pass
+        # 初始化配置数据
+        ConfigData.init()
 
     # 创建新链接用户
 
