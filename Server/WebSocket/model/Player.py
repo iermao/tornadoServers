@@ -11,19 +11,9 @@ from . import MsgDefine
 
 #玩家
 class Player(BaseUser, SuitData):
-    # 创建时间
-    nCreatetime = time.time()
-    # 登录时间
-    nLogintime = time.time()
-    # 登出时间
-    nLlogouttime = time.time()
 
     # 玩家数据
     basedata = {}
-    # 当前穿搭数据
-    suitdata = []
-    # 当前衣服物品数据
-    dressdata = []
 
     # 初始化植物数据
     plantdata = {}
@@ -36,6 +26,7 @@ class Player(BaseUser, SuitData):
         SuitData.__init__(self)
         self.GetData()
 
+    # 登录获取数据
     def GetData(self):
         # 基础数据
         self.basedata = self.DBM.getBaseData(self.cid)
@@ -50,16 +41,9 @@ class Player(BaseUser, SuitData):
         self.Sendplantdata()
         self.Sendseeddata()
 
+    # 登录初始化发送数据---begin
     def Sendbasedata(self):
         _msg = {"id": MsgDefine.USER_MSG_BASEDATA, "data": self.basedata}
-        self.pobj.write_message(_msg)
-
-    def Sendsuitdata(self):
-        _msg = {"id": MsgDefine.USER_MSG_SUITATA, "data": self.suitdata}
-        self.pobj.write_message(_msg)
-
-    def Senddressdata(self):
-        _msg = {"id": MsgDefine.USER_MSG_DRESSDATA, "data": self.dressdata}
         self.pobj.write_message(_msg)
 
     def Sendplantdata(self):
@@ -70,6 +54,9 @@ class Player(BaseUser, SuitData):
         _msg = {"id": MsgDefine.USER_MSG_SEEDDATA, "data": self.seeddata}
         self.pobj.write_message(_msg)
 
+    # 登录初始化发送数据---end
+
+    # 保存数据
     def SaveData(self):
         self.DBM.Save_BaseData(self)
         self.DBM.Save_homedata(self)
