@@ -121,7 +121,7 @@ class dbmanage():
     # 初始化种子数据
     def initSeedData(self, _data):
         if (_data == ""):
-            return {10001: 10}
+            return {"10001": 10}
         else:
             return eval(_data)
 
