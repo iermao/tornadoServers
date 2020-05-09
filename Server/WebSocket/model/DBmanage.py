@@ -63,7 +63,7 @@ class dbmanage():
 
     # 获得玩家换装以及获得的装备
     def getHomeData(self, cid):
-        sql = "select `cid`,`suitdata`,`seeddata` from `player` where cid = {0}"
+        sql = "select `cid`,`suitdata`,`dressdata` from `player` where cid = {0}"
         sql = sql.format(cid)
         _data = self.dbhelper.Seldata(sql)
         _list = {}
