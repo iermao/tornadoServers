@@ -127,7 +127,6 @@ class dbmanage():
 
     #保存玩家基础数据
     def Save_BaseData(self, _puser):
-
         sql = "UPDATE `player` set `logintime` = {0},  `logouttime` = {1}, `level` = {2},  `exp` = {3},  `gamemoney` = {4},  `paymoney` = {5}  where cid = {6} ;"
         sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid)
         self.dbhelper.execute(sql)

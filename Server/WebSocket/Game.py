@@ -125,7 +125,5 @@ class game():
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
                 puser.close()
-
-                
                 puser.SaveData()
             self.DelPlayerList(nobj)
