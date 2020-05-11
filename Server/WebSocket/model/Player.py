@@ -111,7 +111,7 @@ class Player(BaseUser, Suit, Farm):
         _paymoney = int(_paymoney)
         if (_paymoney <= 0):
             return False
-        if (self.get_paymoney < _paymoney):
+        if (self.get_paymoney() < _paymoney):
             return False
         self.basedata["paymoney"] -= _paymoney
 

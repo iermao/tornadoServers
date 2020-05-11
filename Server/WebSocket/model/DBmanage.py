@@ -90,21 +90,21 @@ class dbmanage():
 
     # 初始化---当前穿搭数据
     def initSuitData(self, _data):
-        if (_data == ""):
+        if (str(_data).replace(' ', '') == ""):
             return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         else:
             return eval(_data)
 
     # 初始化---当前衣服物品数据
     def initDressData(self, _data):
-        if (_data == ""):
+        if (str(_data).replace(' ', '') == ""):
             return [10101]
         else:
             return eval(_data)
 
     # 初始化植物数据
     def initPlantData(self, _data):
-        if (_data == ""):
+        if (str(_data).replace(' ', '') == ""):
             return {
                 "0": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 "1": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -120,8 +120,8 @@ class dbmanage():
 
     # 初始化种子数据
     def initSeedData(self, _data):
-        if (_data == ""):
-            return {"10001": 10}
+        if (str(_data).replace(' ', '') == ""):
+            return {"1001": 10}
         else:
             return eval(_data)
 

@@ -105,12 +105,13 @@ class game():
 
         print(len(self.playerList))
 
-        if nobj in self.playerList:
-            print("TS----------")
-        else:
-            pass
-        # print("TS")
-        pass
+        _player = self.GetPlayer(nobj)
+        if (_player != None):
+            _player.ClientToServer(_msg)
+            # try:
+            #     _player.ClientToServer(_msg)
+            # except Exception as e:
+            #     print("ServerMsg err {0}".format(str(e)))
 
     #给客户端发送消息
     def ClientMsg(self, nobj, _msg=""):
