@@ -32,13 +32,26 @@ class Game():
         pass
 
     async def NewUser(self, user):
+        await self.sleep(user)
+        await self.sleep2(user)
+        # if (user in self.users):
+        #     _puser = await Puser()
+        #     print("1111111")
+        #     pass
+        # else:
+        #     self.users.add(user)
+        pass
 
-        if (user in self.users):
-            _puser = await Puser()
-            print("1111111")
-            pass
-        else:
-            self.users.add(user)
+    async def sleep(self, user):
+        if (int(user.current_user) == 2):
+            print("sleep 1", user.current_user)
+            await gen.sleep(2)
+            await self.sleep2(user)
+            print("sleep 2", user.current_user)
+        pass
+
+    async def sleep2(self, user):
+        print("sleep2", user.current_user)
         pass
 
 
@@ -56,13 +69,9 @@ class GameHandler(WebSocketHandler):
 
     async def open(self):
         # print('收到新的WebSocket连接')
-        if (int(self.current_user) == 2):
-            print("sleep 1")
-            await gen.sleep(2)
-            print("sleep 2")
-        print("111", self.current_user)
+        # print("111", self.current_user)
         await self.game.NewUser(self)
-        print("222", self.current_user)
+        # print("222", self.current_user)
 
     # 接收消息
     async def on_message(self, message):
