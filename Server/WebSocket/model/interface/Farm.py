@@ -18,16 +18,26 @@ class Farm():
     def __init__(self):
         pass
 
+    # 发送土地植物数据
     def Sendplantdata(self):
         _msg = {"id": MsgDefine.USER_MSG_PLANTDATA, "data": self.plantdata}
         self.pobj.write_message(_msg)
 
+    # 发送种子数据
     def Sendseeddata(self):
 
         _msg = {"id": MsgDefine.USER_MSG_SEEDDATA, "data": self.seeddata}
 
         self.pobj.write_message(_msg)
         self.SetobjPlantData()
+
+    # 发送一个土地数据
+    def SendOnePlant(self, index):
+        _plantobj = self.plantobj[index]  # 获取对象
+        self.plantdata[str(index)] = _plantobj.Toarr()  # 转化数据
+        _data = {"id": index, "val": _plantobj.Toarr()}  #拼接数据
+        _msg = {"id": MsgDefine.USER_MSG_PLANT_ONE, "data": _data}
+        self.pobj.write_message(_msg)  # 发送数据
 
     # 将土地数据设置为对象
     def SetobjPlantData(self):
@@ -43,7 +53,7 @@ class Farm():
         pass
 
     # 购买种子
-    def bny_seed(self, _seedid, _count):
+    def C_buy_seed(self, _seedid, _count):
         # 需要货币数量
         _seeddata = ConfigData.seed_Data[_seedid]
         if (_seeddata["id"] < 1000):
@@ -109,22 +119,15 @@ class Farm():
         key = str(seedid)
         if (key in self.seeddata):
             self.seeddata[key] -= count
+            if (self.seeddata[key] <= 0):
+                self.seeddata.pop(key)
             return True
         else:
             return False
 
-    # # 获取土地对象
-    # def getplantdata(self, plantindex):
-
-    #     key = str(plantindex)
-    #     if (key in self.seeddata):
-    #         return self.plantdata[key]
-    #     else:
-    #         return None
-
     # 土地种植种子
-    def Plant_seed(self, seedid, plantindex):
-        if (self.have_seed() is False):
+    def C_Plant_seed(self, plantindex, seedid):
+        if (self.have_seed(seedid) is False):
             return False
 
         _plantobj = self.plantobj[plantindex]
@@ -136,28 +139,48 @@ class Farm():
             return False
 
         _newPlant = PlantData()
-        _plantobj = _newPlant.newPlant()
-        # self.plantobj[plantindex]
+        _newPlant.newPlant(seedid)
 
-    # 获取游戏币
-    def pickmoney(self, plantindex):
+        rec_seedstate = self.Rec_seed(seedid, 1)
+        if (rec_seedstate):
+            self.plantobj[plantindex] = _newPlant
+            self.SendOnePlant(plantindex)
+            self.Sendseeddata()
+
+    # 状态按钮点击
+    def C_Plant_pick(self, plantindex):
         _plantobj = self.plantobj[plantindex]
         if (_plantobj == None):
             return False
-        _plantobj.pickmoney()
+        if (_plantobj.moneystate == 1):
+            _state = _plantobj.pickmoney()
+            if (_state == True):  # 加钱加经验
+                _money = _plantobj.GetStep_rewardCoins()
+                _exp = _plantobj.getstep_rewardExps()
 
-    # 浇水
-    def water(self, plantindex):
+                self.add_gamemoney(_money)
+                self.addexp(_exp)
+                pass
+        elif (_plantobj.waterstate == 1):
+            _state = _plantobj.Water()
+        # 收获这里要给玩家增加游戏币以及衣服数据
+        elif (_plantobj.step == 4):
+            _state = _plantobj.Harvest()
+        else:
+            pass
+
+        self.SendOnePlant(plantindex)
+
+    # 检测是否完成
+    def C_Plant_check(self, plantindex):
         _plantobj = self.plantobj[plantindex]
         if (_plantobj == None):
             return False
-        _plantobj.Water()
-
-    def ChangeState(self, plantindex):
-        plantdata = self.getplantdata(plantindex)
-        if (plantdata == None):
+        state = _plantobj.changeState()
+        if (state):
+            self.SendOnePlant(plantindex)
+        else:
             return False
-        pass
 
 
 class PlantData(object):
@@ -189,25 +212,25 @@ class PlantData(object):
 
     def Toarr(self):
         _dataarr = []
-        _dataarr.push(self.langstate)
-        _dataarr.push(self.seedid)
-        _dataarr.push(self.times)
-        _dataarr.push(self.step)
-        _dataarr.push(self.steptimes)
-        _dataarr.push(self.moneystate)
-        _dataarr.push(self.waterstate)
-        _dataarr.push(self.watertimes)
-        _dataarr.push(self.otherstate2)
-        _dataarr.push(self.otherstate3)
-        _dataarr.push(self.otherstate4)
+        _dataarr.append(self.langstate)
+        _dataarr.append(self.seedid)
+        _dataarr.append(self.times)
+        _dataarr.append(self.step)
+        _dataarr.append(self.steptimes)
+        _dataarr.append(self.moneystate)
+        _dataarr.append(self.waterstate)
+        _dataarr.append(self.watertimes)
+        _dataarr.append(self.otherstate2)
+        _dataarr.append(self.otherstate3)
+        _dataarr.append(self.otherstate4)
 
         return _dataarr
 
     # //设置一个临时植物数据
     def newPlant(self, _seedid):
-        self.langstate = 0
+        self.langstate = 2
         self.seedid = _seedid
-        self.times = time.time * 1000
+        self.times = time.time() * 1000
         self.step = 0
         self.steptimes = 0
         self.moneystate = 0
@@ -217,31 +240,87 @@ class PlantData(object):
         self.otherstate3 = 0
         self.otherstate4 = 0
 
+        return self
+
     # 浇水
     def Water(self):
         if (self.waterstate == 1):
             self.waterstate = 0
             self.steptimes = 0
-            self.watertimes = time.time * 1000
+            self.watertimes = time.time() * 1000
+            return True
+        return False
 
     # 收获
     def pickmoney(self):
         if (self.moneystate == 1):
             self.moneystate = 0
+            return True
+        else:
+            return False
 
     #  检测状态
     def changeState(self):
-        _seeddata = ConfigData.seed_Data[self.seedid]
-        _steptime = _seeddata["growTime"][self.step]
-        _neewtimes = self.watertimes / 1000.00 + _steptime
 
-        if (_neewtimes >= time.time()):
+        if (self.step == 4):
+            return False
+
+        if (self.waterstate == 1):
+            return False
+
+        if (self.moneystate == 1):
+            return False
+
+        _steptime = self.GetStepTimes()
+
+        _neewtimes = float(self.watertimes / 1000.00) + float(_steptime)
+
+        # print(_neewtimes, _steptime, _seeddata)
+        if (_neewtimes <= time.time()):
             self.step += 1
             if (self.step == 4):
                 self.moneystate = 1
             else:
                 self.waterstate = 1
                 self.moneystate = 1
+            return True
+        return False
+
+    # 获取当前阶段需要时间
+    def GetStepTimes(self):
+        print(self.seedid)
+
+        if (self.seedid < 1):
+            return None
+        _seeddata = ConfigData.seed_Data[self.seedid]
+        _arr = eval(_seeddata["growTime"])
+
+        print(_seeddata)
+        _data = _arr[self.step]
+         
+        return _data
+
+    # 获取当前阶段奖励金币
+    def GetStep_rewardCoins(self):
+        if (self.seedid < 1):
+            return None
+        _seeddata = ConfigData.seed_Data[self.seedid]
+        _arr = eval(_seeddata["rewardCoins"])
+        _data = _arr[self.step - 1]
+        return _data
+
+    # 获取经验
+    def getstep_rewardExps(self):
+        if (self.seedid < 1):
+            return None
+        _seeddata = ConfigData.seed_Data[self.seedid]
+        _arr = eval(_seeddata["rewardExps"])
+        _data = _arr[self.step - 1]
+        return _data
+
+    # 获取声望
+    def getstep_sw(self):
+        return 5
 
     # 收获
     def Harvest(self):
@@ -256,3 +335,5 @@ class PlantData(object):
         self.otherstate2 = 0
         self.otherstate3 = 0
         self.otherstate4 = 0
+
+        return True

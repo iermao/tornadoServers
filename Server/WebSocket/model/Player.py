@@ -1,6 +1,5 @@
 import os
 import json
-import datetime
 import time
 
 from . import ConfigData
@@ -58,12 +57,32 @@ class Player(BaseUser, Suit, Farm):
         self.DBM.Save_homedata(self)
         self.DBM.Save_farmdata(self)
 
+    def addexp(self, _exp):
+        _exp = int(_exp)
+        if (_exp <= 0):
+            return False
+        _nowexp = self.basedata["exp"]
+
+        _nowlvlexp = ConfigData.level_Data[self.basedata["level"]]["exp"]
+
+        _tmpexp = _nowexp + _exp
+
+        if (_tmpexp >= _nowlvlexp):
+            self.Leveliup(1)
+            self.addexp(_tmpexp - _nowlvlexp)
+        else:
+            self.basedata["exp"] += _exp
+
+        self.Sendbasedata()
+        return True
+
     # 升级
     def Leveliup(self, _addlevel):
         _addlevel = int(_addlevel)
         if (_addlevel < 1):
             return False
         self.basedata["level"] += _addlevel
+        self.basedata["exp"] = 0
         return True
 
     #获取游戏币

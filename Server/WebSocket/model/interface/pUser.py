@@ -28,7 +28,7 @@ class BaseUser(object):
 
     # 接受消息
     def ClientToServer(self,msg):
-        print(str(msg))
+        # print(str(msg))
         try:
             _msg = json.loads(msg)
         except:
@@ -36,22 +36,48 @@ class BaseUser(object):
             return
         # print(_msg)
         _msgid = int(_msg["id"])
-        # print(_msgid,type(_msg["data"]),_msg["data"])
-        if(_msgid == MsgDefine.USER_MSG_BUYSEED):
+        
+        # print("ClientToServer",_msgid,type(_msg["data"]),_msg["data"])
+
+        if(_msgid == MsgDefine.USER_MSG_BUYSEED):# 购买种子
             self.client_buyseed(_msg["data"])
+
+        elif(_msgid == MsgDefine.USER_MSG_PLANT):# 种植
+            self.client_plantnew(_msg["data"])
+  
+        elif(_msgid == MsgDefine.USER_MSG_PLANT_PICK):# 植物状态按钮点击
+            self.client_plantpick(_msg["data"])
+
+        elif(_msgid == MsgDefine.USER_MSG_PLANT_CHECK):# 植物状态检测
+            self.client_plantcheckstate(_msg["data"])
+
         elif(False):
             pass
-    
         else:
             pass
         
     # 给客户端发送消息
     def ToClientMsg(self, msg):
         pass
+    # **********************************************************
+    # 客户端消息处理
+    # **********************************************************
+    # 买种子
     def client_buyseed(self,msg):
-        # print(msg)
-        # _msg = json.loads(msg)
         _seedid = msg['seedid']
         _count = msg["count"]
-        # print(_seedid)
-        self.bny_seed(_seedid,_count)
+        self.C_buy_seed(_seedid,_count)
+
+    # 种植土地
+    def client_plantnew(self,msg):
+        index=int(msg['index'])
+        seedid = msg["seedid"]
+        self.C_Plant_seed(index, seedid)
+    # 土地状态点击
+    def client_plantpick(self,msg):
+        index=int(msg['index'])
+        self.C_Plant_pick(index)
+
+    def client_plantcheckstate(self,msg):
+        index=int(msg['index'])
+        self.C_Plant_check(index)

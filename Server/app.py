@@ -2,7 +2,6 @@
 # Author: iermao
 # Python 3.6.6
 
-
 import os
 import tornado
 # import tornado.ioloop
@@ -38,13 +37,11 @@ class app():
             # cookie_secret="2hcicVu+TqShDpfsjMWQLZ0Mkq5NPEWSk9fi0zsSt3A=",
             debug=True,
         )
-        http_server = tornado.httpserver.HTTPServer(
-            app)  # 将应用处理逻辑 传递给HTTPServer 服务
+        http_server = tornado.httpserver.HTTPServer(app)  # 将应用处理逻辑 传递给HTTPServer 服务
         http_server.listen(options.port)  # 配置监听地址到 HTTPServe
         print("websocket server run port = {0}".format(options.port))
-
-        tornado.ioloop.IOLoop.current().start()  # 启动应用
-
+        # http_server.start(4)
+        tornado.ioloop.IOLoop.instance().start()  # 启动应用
 
 if __name__ == '__main__':
     app()

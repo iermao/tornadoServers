@@ -1,6 +1,6 @@
 # import os
-# import json
-# import datetime
+import json
+import time
 import hashlib
 
 from .model.Player import Player
@@ -101,13 +101,21 @@ class game():
     # 玩家列表管理-------------end
     # *****************************
 
-    def ServerMsg(self, nobj, _msg):
+    # *****************************
+    # 消息管理
+    # *****************************
+    def ServerMsg(self, nobj, msg):
 
-        print(len(self.playerList))
+        # print(len(self.playerList))
 
         _player = self.GetPlayer(nobj)
         if (_player != None):
-            _player.ClientToServer(_msg)
+            try:
+                _msg = json.loads(msg)
+            except Exception as e:
+                print("json err ", str(e))
+                return
+            _player.ClientToServer(msg)
             # try:
             #     _player.ClientToServer(_msg)
             # except Exception as e:
