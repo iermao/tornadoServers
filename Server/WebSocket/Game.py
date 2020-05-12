@@ -26,7 +26,7 @@ class game():
 
     # 创建新链接用户
 
-    def NewUser(self, nobj):
+    async def NewUser(self, nobj):
         if nobj in self.nobjs:
             return False, "on link"
 
@@ -58,10 +58,10 @@ class game():
 
         print(nobj.current_user.cid)
 
-        self.PListInsert(nobj)
+        await self.PListInsert(nobj)
 
         _msg = {"id": MSG_STARTGAME}
-        self.ClientMsg(nobj, _msg)
+        await self.ClientMsg(nobj, _msg)
         return True, " link ok "
 
     # *****************************
@@ -69,7 +69,7 @@ class game():
     # *****************************
 
     # 玩家列表增加数据
-    def PListInsert(self, nobj):
+    async def PListInsert(self, nobj):
         _cid = nobj.current_user.cid
         _pwd = nobj.current_user.pwd
         if (_cid in self.playerList.keys()):
@@ -85,13 +85,13 @@ class game():
         return self.playerList[_cid]
 
     #根据连接对象返回玩家实例
-    def GetPlayer(self, nobj):
+    async def GetPlayer(self, nobj):
         if (nobj.current_user.cid in self.playerList.keys()):
             return self.playerList[nobj.current_user.cid]
         return None
 
     # 删除玩家实例
-    def DelPlayerList(self, nobj):
+    async def DelPlayerList(self, nobj):
         if (nobj.current_user.cid in self.playerList.keys()):
             self.playerList.pop(nobj.current_user.cid)
             return True
@@ -104,11 +104,11 @@ class game():
     # *****************************
     # 消息管理
     # *****************************
-    def ServerMsg(self, nobj, msg):
+    async def ServerMsg(self, nobj, msg):
 
         # print(len(self.playerList))
 
-        _player = self.GetPlayer(nobj)
+        _player = await self.GetPlayer(nobj)
         if (_player != None):
             try:
                 _msg = json.loads(msg)
@@ -122,12 +122,12 @@ class game():
             #     print("ServerMsg err {0}".format(str(e)))
 
     #给客户端发送消息
-    def ClientMsg(self, nobj, _msg=""):
+    async def ClientMsg(self, nobj, _msg=""):
         if (_msg == ""):
             _msg = {"id": MSG_STARTGAME}
         nobj.write_message(_msg)
 
-    def close(self, nobj):
+    async def close(self, nobj):
         print("close")
         if (nobj in self.nobjs):
             self.nobjs.remove(nobj)

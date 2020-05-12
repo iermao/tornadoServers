@@ -69,7 +69,6 @@ class Account():
         # http.write(msg)
 
     # 查询用户uid---用户注册的时候使用
-    @gen.coroutine
     async def Seluid(self, uid):
         sql = "SELECT `id` FROM userdata  where uid = '" + uid + "' LIMIT 1"
 
@@ -84,7 +83,6 @@ class Account():
         return aaaaa
 
     # 用户登录查询
-    # @gen.coroutine
     async def SelUser(self, uid, pwd):
         sql = "SELECT `id` FROM userdata  where uid = '" + uid + "' and pwd = '" + pwd + "' LIMIT 1"
 
@@ -99,7 +97,6 @@ class Account():
         return aaaaa
 
     # 注册用户
-    # @gen.coroutine
     async def RegUser(self, uid, pwd):
         _addtime = time.time() * 1000
         sql = "insert into `userdata` (`addtime`,`uid`,`pwd`,`logintime`) values ({0},'{1}','{2}',{3})"

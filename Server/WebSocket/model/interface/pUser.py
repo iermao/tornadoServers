@@ -36,7 +36,6 @@ class BaseUser(object):
             return
         # print(_msg)
         _msgid = int(_msg["id"])
-        
         # print("ClientToServer",_msgid,type(_msg["data"]),_msg["data"])
 
         if(_msgid == MsgDefine.USER_MSG_BUYSEED):# 购买种子

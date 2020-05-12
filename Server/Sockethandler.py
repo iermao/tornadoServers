@@ -40,16 +40,16 @@ class GameHandler(WebSocketHandler):
             return None
 
     # @tornado.web.authenticated
-    def open(self):
+    async def open(self):
         # print('收到新的WebSocket连接')
-        state, msg =  self.game.NewUser(self)
+        state, msg = await self.game.NewUser(self)
         if state == False:
             print(msg)
             self.close()
 
     # 接收消息
-    def on_message(self, message):
-        self.game.ServerMsg(self, message)
+    async def on_message(self, message):
+        await self.game.ServerMsg(self, message)
 
     # 关闭连接
     def on_close(self):

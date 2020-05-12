@@ -5,6 +5,8 @@ from Server.WebSocket.model import MsgDefine
 
 from Server.WebSocket.model import ConfigData
 
+from tornado import gen
+
 
 class Farm():
 
@@ -16,7 +18,22 @@ class Farm():
     plantobj = dict()
 
     def __init__(self):
+        aa = self.timer()
         pass
+    
+    
+    def aaa(self):
+        self.timer()
+
+    async def timer(self):
+        await gen.sleep(10)
+        print("timer", self.cid)
+        for obj in self.plantobj.values():
+            if (obj.langstate == 1):
+                pass
+            else:
+                pass
+        self.timer()
 
     # 发送土地植物数据
     def Sendplantdata(self):
@@ -176,6 +193,7 @@ class Farm():
         _plantobj = self.plantobj[plantindex]
         if (_plantobj == None):
             return False
+        print(self.cid, plantindex, _plantobj.seedid)
         state = _plantobj.changeState()
         if (state):
             self.SendOnePlant(plantindex)
@@ -273,6 +291,10 @@ class PlantData(object):
 
         _steptime = self.GetStepTimes()
 
+        if (_steptime <= 0):
+            return False
+
+        print(self.watertimes, _steptime)
         _neewtimes = float(self.watertimes / 1000.00) + float(_steptime)
 
         # print(_neewtimes, _steptime, _seeddata)
@@ -291,13 +313,13 @@ class PlantData(object):
         print(self.seedid)
 
         if (self.seedid < 1):
-            return None
+            return 0
         _seeddata = ConfigData.seed_Data[self.seedid]
         _arr = eval(_seeddata["growTime"])
 
-        print(_seeddata)
+        # print(_seeddata)
         _data = _arr[self.step]
-         
+
         return _data
 
     # 获取当前阶段奖励金币
