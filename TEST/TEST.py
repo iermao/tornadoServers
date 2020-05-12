@@ -33,6 +33,7 @@ class Game():
 
     async def NewUser(self, user):
         await self.sleep(user)
+        print("sleep")
         await self.sleep2(user)
         # if (user in self.users):
         #     _puser = await Puser()
@@ -43,9 +44,10 @@ class Game():
         pass
 
     async def sleep(self, user):
+        await gen.sleep(2)
         if (int(user.current_user) == 2):
             print("sleep 1", user.current_user)
-            await gen.sleep(2)
+            await gen.sleep(4)
             await self.sleep2(user)
             print("sleep 2", user.current_user)
         pass
