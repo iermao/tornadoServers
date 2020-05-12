@@ -1,10 +1,12 @@
 # import os
-# import json
-# import datetime
+import json
+import time
 import hashlib
 
 from .model.Player import Player
 from .model.DBmanage import dbmanage
+
+from .model import ConfigData
 
 MSG_STARTGAME = 10001
 
@@ -12,18 +14,19 @@ MSG_STARTGAME = 10001
 # 游戏管理
 class game():
     def __init__(self):
-        print("Game  __init__")
+        # print("Game  __init__")
         # 所有连接进来的网络对象
         self.nobjs = set()
         # 创建的玩家字典
         self.playerList = dict()
         # 实例化数据库连接对象
         self.dbmanage = dbmanage()
-        pass
+        # 初始化配置数据
+        ConfigData.init()
 
     # 创建新链接用户
 
-    def NewUser(self, nobj):
+    async def NewUser(self, nobj):
         if nobj in self.nobjs:
             return False, "on link"
 
@@ -55,10 +58,10 @@ class game():
 
         print(nobj.current_user.cid)
 
-        self.PListInsert(nobj)
+        await self.PListInsert(nobj)
 
         _msg = {"id": MSG_STARTGAME}
-        self.ClientMsg(nobj, _msg)
+        await self.ClientMsg(nobj, _msg)
         return True, " link ok "
 
     # *****************************
@@ -66,7 +69,7 @@ class game():
     # *****************************
 
     # 玩家列表增加数据
-    def PListInsert(self, nobj):
+    async def PListInsert(self, nobj):
         _cid = nobj.current_user.cid
         _pwd = nobj.current_user.pwd
         if (_cid in self.playerList.keys()):
@@ -82,13 +85,13 @@ class game():
         return self.playerList[_cid]
 
     #根据连接对象返回玩家实例
-    def GetPlayer(self, nobj):
+    async def GetPlayer(self, nobj):
         if (nobj.current_user.cid in self.playerList.keys()):
             return self.playerList[nobj.current_user.cid]
         return None
 
     # 删除玩家实例
-    def DelPlayerList(self, nobj):
+    async def DelPlayerList(self, nobj):
         if (nobj.current_user.cid in self.playerList.keys()):
             self.playerList.pop(nobj.current_user.cid)
             return True
@@ -98,24 +101,33 @@ class game():
     # 玩家列表管理-------------end
     # *****************************
 
-    def ServerMsg(self, nobj, _msg):
+    # *****************************
+    # 消息管理
+    # *****************************
+    async def ServerMsg(self, nobj, msg):
 
-        print(len(self.playerList))
+        # print(len(self.playerList))
 
-        if nobj in self.playerList:
-            print("TS----------")
-        else:
-            pass
-        # print("TS")
-        pass
+        _player = await self.GetPlayer(nobj)
+        if (_player != None):
+            try:
+                _msg = json.loads(msg)
+            except Exception as e:
+                print("json err ", str(e))
+                return
+            _player.ClientToServer(msg)
+            # try:
+            #     _player.ClientToServer(_msg)
+            # except Exception as e:
+            #     print("ServerMsg err {0}".format(str(e)))
 
     #给客户端发送消息
-    def ClientMsg(self, nobj, _msg=""):
+    async def ClientMsg(self, nobj, _msg=""):
         if (_msg == ""):
             _msg = {"id": MSG_STARTGAME}
         nobj.write_message(_msg)
 
-    def close(self, nobj):
+    async def close(self, nobj):
         print("close")
         if (nobj in self.nobjs):
             self.nobjs.remove(nobj)

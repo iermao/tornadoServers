@@ -11,7 +11,7 @@ import pymysql
 
 class DBHelper():
     def __init__(self, _host="127.0.0.1", _port=3306, _user="root", _password="root", _database="gardendressup"):
-        print("DBHelper   __init__")
+        # print("DBHelper   __init__")
         self.host = _host
         self.port = _port
         self.user = _user
