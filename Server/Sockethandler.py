@@ -7,17 +7,16 @@ from tornado.websocket import WebSocketHandler
 
 from .WebSocket.Game import game
 
+from tornado import gen
 # 继承tornado.websocket.WebSocketHandler,只处理WS协议的请求
 
 
 class CurrentUser(object):
-    uid = ""
-    pwd = ""
-    keys = ""
-    cid = 0
-
-    def __init__(self):
-        pass
+    def __init__(self, _uid, _pwd, _keys):
+        self.uid = ""
+        self.pwd = ""
+        self.keys = ""
+        self.cid = 0
 
 
 class GameHandler(WebSocketHandler):
@@ -29,7 +28,7 @@ class GameHandler(WebSocketHandler):
         pwd = self.get_argument(name='pwd', default='None')
         keys = self.get_argument(name='keys', default='None')
 
-        currentuser = CurrentUser()
+        currentuser = CurrentUser(uid, pwd, keys)
         currentuser.uid = uid
         currentuser.pwd = pwd
         currentuser.keys = keys
@@ -44,16 +43,18 @@ class GameHandler(WebSocketHandler):
         # print('收到新的WebSocket连接')
         state, msg = await self.game.NewUser(self)
         if state == False:
-            print(msg)
-            self.close()
+            await self.close()
 
     # 接收消息
     async def on_message(self, message):
         await self.game.ServerMsg(self, message)
 
     # 关闭连接
+    @gen.coroutine
     def on_close(self):
-        self.game.close(self)
+        print("on_close1")
+        yield self.game.close(self)
+        print("on_close2")
 
     def check_origin(self, origin):
         return True  # 允许WebSocket的跨域请求

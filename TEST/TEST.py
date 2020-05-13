@@ -23,10 +23,9 @@ class Puser():
 class Game():
     users = set()
 
-    def __init__(self):
+    async def __init__(self):
         self.id = 1
-        # _puser = await Puser()
-        # return self
+        _puser = await Puser()
 
     async def ServerMsg(self, msg):
         pass

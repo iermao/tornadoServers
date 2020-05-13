@@ -14,50 +14,58 @@ from . import MsgDefine
 #玩家
 class Player(BaseUser, Suit, Farm):
 
-    # 玩家数据
-    basedata = {}
-
-    def __init__(self, _user, cid, _pwd, _DBM):
-        print("Player  __init__")
-        BaseUser.__init__(self, _user, cid, _DBM)
+    def __init__(self):
+        # 玩家数据
+        self.basedata = {}
+        BaseUser.__init__(self)
         Suit.__init__(self)
         Farm.__init__(self)
-        self.GetData()
+        # pass
+
+    async def init(self, tmpuser, tmpcid, tmppwd, tmpDBM):
+        print("Player  __init__")
+        await BaseUser.init(self, tmpuser, tmpcid, tmpDBM)
+        await Suit.init(self)
+        await Farm.init(self)
+        await self.GetData()
+        pass
         # print(ConfigData.level_Data)
-
-        self.add_gamemoney(1000)
-
-        self.add_paymoney(100)
+        # self.add_gamemoney(1000)
+        # self.add_paymoney(100)
 
     # 登录获取数据
-    def GetData(self):
+    async def GetData(self):
         # 基础数据
-        self.basedata = self.DBM.getBaseData(self.cid)
-        self.suitdata = self.DBM.getHomeData(self.cid)["suitdata"]
-        self.dressdata = self.DBM.getHomeData(self.cid)["dressdata"]
-        self.plantdata = self.DBM.getSeedAndPlantData(self.cid)["plantdata"]
-        self.seeddata = self.DBM.getSeedAndPlantData(self.cid)["seeddata"]
 
-        self.Sendbasedata()
-        self.Sendsuitdata()
-        self.Senddressdata()
-        self.Sendplantdata()
-        self.Sendseeddata()
+        homedata = await self.DBM.getHomeData(self.cid)
+        plantdata = await self.DBM.getSeedAndPlantData(self.cid)
+
+        self.basedata = await self.DBM.getBaseData(self.cid)
+        self.suitdata = homedata["suitdata"]
+        self.dressdata = homedata["dressdata"]
+        self.plantdata = plantdata["plantdata"]
+        self.seeddata = plantdata["seeddata"]
+
+        await self.Sendbasedata()
+        await self.Sendsuitdata()
+        await self.Senddressdata()
+        await self.Sendplantdata()
+        await self.Sendseeddata()
 
     # 登录初始化发送数据---begin
-    def Sendbasedata(self):
+    async def Sendbasedata(self):
         _msg = {"id": MsgDefine.USER_MSG_BASEDATA, "data": self.basedata}
-        self.pobj.write_message(_msg)
+        await self.ToClientMsg(_msg)
 
     # 登录初始化发送数据---end
 
     # 下线保存所有数据保存数据
-    def SaveData(self):
-        self.DBM.Save_BaseData(self)
-        self.DBM.Save_homedata(self)
-        self.DBM.Save_farmdata(self)
+    async def SaveData(self):
+        await self.DBM.Save_BaseData(self)
+        await self.DBM.Save_homedata(self)
+        await self.DBM.Save_farmdata(self)
 
-    def addexp(self, _exp):
+    async def addexp(self, _exp):
         _exp = int(_exp)
         if (_exp <= 0):
             return False
@@ -68,16 +76,16 @@ class Player(BaseUser, Suit, Farm):
         _tmpexp = _nowexp + _exp
 
         if (_tmpexp >= _nowlvlexp):
-            self.Leveliup(1)
-            self.addexp(_tmpexp - _nowlvlexp)
+            await self.Leveliup(1)
+            await self.addexp(_tmpexp - _nowlvlexp)
         else:
             self.basedata["exp"] += _exp
 
-        self.Sendbasedata()
+        await self.Sendbasedata()
         return True
 
     # 升级
-    def Leveliup(self, _addlevel):
+    async def Leveliup(self, _addlevel):
         _addlevel = int(_addlevel)
         if (_addlevel < 1):
             return False
@@ -86,53 +94,55 @@ class Player(BaseUser, Suit, Farm):
         return True
 
     #获取游戏币
-    def get_gamemoney(self):
+    async def get_gamemoney(self):
         return int(self.basedata["gamemoney"])
 
     # 增加货币
-    def add_gamemoney(self, _gamemoney):
-        _gamemoney = int(_gamemoney)
-        if (_gamemoney <= 0):
+    async def add_gamemoney(self, _value):
+        _value = int(_value)
+        if (_value <= 0):
             return False
-        self.basedata["gamemoney"] += _gamemoney
+        self.basedata["gamemoney"] += _value
 
-        self.Sendbasedata()
+        await self.Sendbasedata()
         return True
 
     # 减少货币
-    def rec_gamemoney(self, _gamemoney):
-        _gamemoney = int(_gamemoney)
-        if (_gamemoney <= 0):
+    async def rec_gamemoney(self, _value):
+        _value = int(_value)
+        if (_value <= 0):
             return False
-        if (self.get_gamemoney() < _gamemoney):
+        _nowmoney = await self.get_gamemoney()
+        if (_nowmoney < _value):
             return False
-        self.basedata["gamemoney"] -= _gamemoney
+        self.basedata["gamemoney"] -= _value
 
-        self.Sendbasedata()
+        await self.Sendbasedata()
         return True
 
     # 获取钻石
-    def get_paymoney(self):
+    async def get_paymoney(self):
         return int(self.basedata["paymoney"])
 
     # 增加钻石
-    def add_paymoney(self, _paymoney):
-        _paymoney = int(_paymoney)
-        if (_paymoney <= 0):
+    async def add_paymoney(self, _value):
+        _value = int(_value)
+        if (_value <= 0):
             return False
-        self.basedata["paymoney"] += _paymoney
+        self.basedata["paymoney"] += _value
 
-        self.Sendbasedata()
+        await self.Sendbasedata()
         return True
 
     # 钻石减少
-    def rec_paymoney(self, _paymoney):
-        _paymoney = int(_paymoney)
-        if (_paymoney <= 0):
+    async def rec_paymoney(self, _value):
+        _value = int(_value)
+        if (_value <= 0):
             return False
-        if (self.get_paymoney() < _paymoney):
+        _nowval = await self.get_paymoney()
+        if (_nowval < _value):
             return False
-        self.basedata["paymoney"] -= _paymoney
+        self.basedata["paymoney"] -= _value
 
-        self.Sendbasedata()
+        await self.Sendbasedata()
         return True

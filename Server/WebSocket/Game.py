@@ -12,9 +12,9 @@ MSG_STARTGAME = 10001
 
 
 # 游戏管理
-class game():
+class game(object):
     def __init__(self):
-        # print("Game  __init__")
+        print("Game  __init__")
         # 所有连接进来的网络对象
         self.nobjs = set()
         # 创建的玩家字典
@@ -27,11 +27,20 @@ class game():
     # 创建新链接用户
 
     async def NewUser(self, nobj):
+        print("NewUser nobjs length", len(self.nobjs))
         if nobj in self.nobjs:
+            print("在线！！")
+            puser = self.playerList[nobj.current_user.cid]
+            if (puser != None):
+                await puser.close()
+                await puser.SaveData()
             return False, "on link"
 
         # 取得用户数据，根据socket第一次连接传递过来数据进行验证
-        if (nobj.current_user.uid == "" or nobj.current_user.uid == "None" or nobj.current_user.uid == None):
+
+        uid = nobj.current_user.uid
+
+        if (uid == "" or uid == "None" or uid == None):
             return False, " nobj.current_user none or empty"
 
         _uid = nobj.current_user.uid
@@ -48,7 +57,7 @@ class game():
         if (_tmpkey != _keys):
             return False, " _keys err"
         # 查询用户匹配数据
-        puid = self.dbmanage.selUser(_uid, _pwd)
+        puid = await self.dbmanage.selUser(_uid, _pwd)
 
         if (puid < 1):
             return False, " puid err" + str(puid)
@@ -59,6 +68,8 @@ class game():
         print(nobj.current_user.cid)
 
         await self.PListInsert(nobj)
+
+        print("NewUser nobjs length1111", len(self.nobjs))
 
         _msg = {"id": MSG_STARTGAME}
         await self.ClientMsg(nobj, _msg)
@@ -78,7 +89,8 @@ class game():
         # 增加到socket连接用户列表
         self.nobjs.add(nobj)
         # 实例化一个玩家对象
-        puser = Player(nobj, _cid, _pwd, self.dbmanage)
+        puser = Player()
+        await puser.init(nobj, _cid, _pwd, self.dbmanage)
         # 玩家列表增加玩家对象
         self.playerList[_cid] = puser
 
@@ -115,7 +127,7 @@ class game():
             except Exception as e:
                 print("json err ", str(e))
                 return
-            _player.ClientToServer(msg)
+            await _player.ClientToServer(msg)
             # try:
             #     _player.ClientToServer(_msg)
             # except Exception as e:
@@ -125,7 +137,7 @@ class game():
     async def ClientMsg(self, nobj, _msg=""):
         if (_msg == ""):
             _msg = {"id": MSG_STARTGAME}
-        nobj.write_message(_msg)
+        await nobj.write_message(_msg)
 
     async def close(self, nobj):
         print("close")
@@ -133,6 +145,6 @@ class game():
             self.nobjs.remove(nobj)
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
-                puser.close()
-                puser.SaveData()
-            self.DelPlayerList(nobj)
+                await puser.close()
+                await puser.SaveData()
+            await self.DelPlayerList(nobj)

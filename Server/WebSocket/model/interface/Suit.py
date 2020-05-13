@@ -4,20 +4,21 @@ import time
 from Server.WebSocket.model import MsgDefine
 
 
-class Suit():
-
-    # 当前穿搭数据
-    suitdata = []
-    # 当前衣服物品数据
-    dressdata = []
-
+class Suit(object):
     def __init__(self):
+        # 当前穿搭数据
+        self.suitdata = []
+        # 当前衣服物品数据
+        self.dressdata = []
         pass
 
-    def Sendsuitdata(self):
-        _msg = {"id": MsgDefine.USER_MSG_SUITATA, "data": self.suitdata}
-        self.pobj.write_message(_msg)
+    async def init(self):
+        pass
 
-    def Senddressdata(self):
+    async def Sendsuitdata(self):
+        _msg = {"id": MsgDefine.USER_MSG_SUITATA, "data": self.suitdata}
+        await self.ToClientMsg(_msg)
+
+    async def Senddressdata(self):
         _msg = {"id": MsgDefine.USER_MSG_DRESSDATA, "data": self.dressdata}
-        self.pobj.write_message(_msg)
+        await self.ToClientMsg(_msg)

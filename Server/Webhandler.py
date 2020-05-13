@@ -40,7 +40,7 @@ class LoginHandler(RequestHandler):
 
     acc = Account()
 
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         '''
         处理输入昵称界面get请求
         :param args:
@@ -57,7 +57,7 @@ class LoginHandler(RequestHandler):
         # self.render('login_use_ajax.html')
         # 使用form表单提交数据 的前端
         # self.render('login_use_form.html')
-        self.write(self.msg)
+        await self.write(self.msg)
 
     # @tornado.gen.coroutine
     async def post(self, *args, **kwargs):
