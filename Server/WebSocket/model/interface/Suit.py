@@ -3,6 +3,8 @@ import time
 
 from Server.WebSocket.model import MsgDefine
 
+from Server.WebSocket.model import ConfigData
+
 
 class Suit(object):
     def __init__(self):
@@ -22,3 +24,20 @@ class Suit(object):
     async def Senddressdata(self):
         _msg = {"id": MsgDefine.USER_MSG_DRESSDATA, "data": self.dressdata}
         await self.ToClientMsg(_msg)
+
+    # 增加衣服数据
+    async def add_suit(self, dressid):
+        # print("add_suit", self.dressdata)
+        if (dressid in self.dressdata):
+            pass
+        else:
+            self.dressdata.append(dressid)
+        await self.Senddressdata()
+
+    # 换衣服
+    async def C_Suit_Change(self, dressid):
+        if (dressid in self.dressdata):
+            _tmpdata = ConfigData.dress_Data[dressid]
+            _partTag = int(_tmpdata['partTag'])
+            self.suitdata[_partTag] = dressid
+        await self.Sendsuitdata()

@@ -1,5 +1,6 @@
 import json
 import time
+import random
 
 from Server.WebSocket.model import MsgDefine
 
@@ -153,7 +154,7 @@ class Farm(object):
 
         _plantobj = self.plantobj[plantindex]
         if (_plantobj != None):
-            print(self.cid, plantindex, _plantobj.seedid, await _plantobj.Toarr())
+            # print(self.cid, plantindex, _plantobj.seedid, await _plantobj.Toarr())
             if (_plantobj.moneystate == 1):
                 _state = await _plantobj.pickmoney()
                 if (_state == True):  # 加钱加经验
@@ -164,9 +165,17 @@ class Farm(object):
                     await self.addexp(_exp)
             elif (_plantobj.waterstate == 1):
                 _state = await _plantobj.Water()
+
             # 收获这里要给玩家增加游戏币以及衣服数据
-            elif (_plantobj.step == 4 and _plantobj.moneystate == 0):
-                _state = await _plantobj.Harvest()
+            elif (_plantobj.step == 4 and _plantobj.moneystate == 0 and _plantobj.waterstate == 0):
+                seeddata = ConfigData.seed_Data[_plantobj.seedid]
+                suitid = int(seeddata["suitId"])
+                suitdata = ConfigData.suit_Data[suitid]
+                dresslist = eval(suitdata["dressIds"])
+                _random = random.randint(0, len(dresslist) - 1)
+                _index = dresslist[_random]
+                await self.add_suit(_index)
+                await _plantobj.Harvest()
             else:
                 pass
         await self.SendOnePlant(plantindex)
@@ -277,7 +286,7 @@ class PlantData(object):
         if (_steptime <= 0):
             return False
 
-        print(self.watertimes, _steptime)
+        # print(self.watertimes, _steptime)
         _neewtimes = float(self.watertimes / 1000.00) + float(_steptime)
 
         # print(_neewtimes, _steptime, _seeddata)
@@ -293,7 +302,7 @@ class PlantData(object):
 
     # 获取当前阶段需要时间
     async def GetStepTimes(self):
-        print(self.seedid)
+        # print(self.seedid)
 
         if (self.seedid < 1):
             return 0

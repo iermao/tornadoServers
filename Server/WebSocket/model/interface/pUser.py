@@ -53,6 +53,9 @@ class BaseUser(object):
         elif(_msgid == MsgDefine.USER_MSG_PLANT_CHECK):# 植物状态检测
             await self.client_plantcheckstate(_msg["data"])
 
+        elif(_msgid == MsgDefine.USER_MSG_CHANGESUIT):# 植物状态检测
+            await self.client_chengesuit(_msg["data"])
+
         elif(False):
             pass
         else:
@@ -83,6 +86,12 @@ class BaseUser(object):
         index=int(msg['index'])
         await self.C_Plant_pick(index)
 
+    # 检测土地状态
     async def client_plantcheckstate(self,msg):
         index=int(msg['index'])
         await self.C_Plant_check(index)
+
+    #换装
+    async def client_chengesuit(self,msg):
+        _id  =int(msg['id'])
+        await self.C_Suit_Change(_id)
