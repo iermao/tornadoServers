@@ -40,7 +40,7 @@ class GameHandler(WebSocketHandler):
 
     # @tornado.web.authenticated
     async def open(self):
-        # print('收到新的WebSocket连接')
+        print('WebSocket open')
         state, msg = await self.game.NewUser(self)
         if state == False:
             await self.close()
@@ -52,9 +52,9 @@ class GameHandler(WebSocketHandler):
     # 关闭连接
     @gen.coroutine
     def on_close(self):
-        print("on_close1")
+        # print("on_close1")
         yield self.game.close(self)
-        print("on_close2")
+        # print("on_close2")
 
     def check_origin(self, origin):
         return True  # 允许WebSocket的跨域请求

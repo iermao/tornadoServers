@@ -31,12 +31,11 @@ class Account():
 
         if (_cmd == "login"):
             _seluid = await self.SelUser(_name, _pwdmd5)
-            print(_seluid)
+            # print("login", _seluid, msg)
             if (_seluid > 0):
                 msg = self.GetMsg(0, "ok")
             else:
                 msg = self.GetMsg(1, "no reg")
-
         elif (_cmd == "reg"):
             _seluid = await self.Seluid(_name)
             if (_seluid > 0):
@@ -53,7 +52,7 @@ class Account():
         msg["uid"] = str(_name)
         msg["pwd"] = str(_pwdmd5)
         msg["keys"] = str(_key)
-
+        # print(msg)
         msg = json.dumps(msg)
         return msg
         # raise gen.Return(msg)

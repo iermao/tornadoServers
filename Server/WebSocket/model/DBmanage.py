@@ -43,7 +43,7 @@ class dbmanage():
             sql = "insert into `player` ( `cid`,`createtime`,`logintime`,`logouttime`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`suitdata`,`dressdata`,`plantdata`,`seeddata`) values ({0},{1},{2},{3},'',1,1,1,0,0,'','','','');"
             _time = time.time() * 1000
             sql = sql.format(cid, _time, _time, _time)
-            self.dbhelper.execute(sql)
+            await self.dbhelper.execute(sql)
 
     #获得玩家基础数据
     async def getBaseData(self, cid):

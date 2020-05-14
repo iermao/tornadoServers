@@ -140,8 +140,9 @@ class game(object):
         await nobj.write_message(_msg)
 
     async def close(self, nobj):
-        print("close")
+        # print("close")
         if (nobj in self.nobjs):
+            print(nobj.current_user.uid, " close")
             self.nobjs.remove(nobj)
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
