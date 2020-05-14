@@ -23,6 +23,17 @@ class Farm(object):
     async def init(self):
         pass
 
+    async def initData(self):
+        plantdata = await self.DBM.getSeedAndPlantData(self.cid)
+        self.plantdata = plantdata["plantdata"]
+        self.seeddata = plantdata["seeddata"]
+
+        await self.Sendplantdata()
+        await self.Sendseeddata()
+
+    async def SaveData(self):
+        await self.DBM.Save_farmdata(self)
+
     # 发送土地植物数据
     async def Sendplantdata(self):
         _msg = {"id": MsgDefine.USER_MSG_PLANTDATA, "data": self.plantdata}
@@ -191,20 +202,18 @@ class Farm(object):
 
 
 class PlantData(object):
-
-    langstate = -1  #(0:为开放，1：未种植，2:已经种植)
-    seedid = 0  #种子id
-    times = 0  #种植时间
-    step = 0  #阶段状态
-    steptimes = 0  #当前阶段已经进行时间
-    moneystate = 0  #是否金钱奖励
-    waterstate = 0  #是否需要浇水
-    watertimes = 0  #浇水时间
-    otherstate2 = 0
-    otherstate3 = 0
-    otherstate4 = 0
-
     def __init__(self):
+        self.langstate = -1  #(0:为开放，1：未种植，2:已经种植)
+        self.seedid = 0  #种子id
+        self.times = 0  #种植时间
+        self.step = 0  #阶段状态
+        self.steptimes = 0  #当前阶段已经进行时间
+        self.moneystate = 0  #是否金钱奖励
+        self.waterstate = 0  #是否需要浇水
+        self.watertimes = 0  #浇水时间
+        self.otherstate2 = 0
+        self.otherstate3 = 0
+        self.otherstate4 = 0
         pass
 
     async def init(self, _arr=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):

@@ -17,6 +17,17 @@ class Suit(object):
     async def init(self):
         pass
 
+    async def initData(self):
+        homedata = await self.DBM.getHomeData(self.cid)
+        self.suitdata = homedata["suitdata"]
+        self.dressdata = homedata["dressdata"]
+
+        await self.Sendsuitdata()
+        await self.Senddressdata()
+
+    async def SaveData(self):
+        await self.DBM.Save_homedata(self)
+
     async def Sendsuitdata(self):
         _msg = {"id": MsgDefine.USER_MSG_SUITATA, "data": self.suitdata}
         await self.ToClientMsg(_msg)

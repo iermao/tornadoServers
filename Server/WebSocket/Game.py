@@ -33,7 +33,7 @@ class game(object):
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
                 await puser.close()
-                await puser.SaveData()
+                await puser.SaveData_ALL()
             return False, "on link"
 
         # 取得用户数据，根据socket第一次连接传递过来数据进行验证
@@ -147,5 +147,5 @@ class game(object):
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
                 await puser.close()
-                await puser.SaveData()
+                await puser.SaveData_ALL()
             await self.DelPlayerList(nobj)

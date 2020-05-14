@@ -18,7 +18,6 @@ class CurrentUser(object):
         self.keys = ""
         self.cid = 0
 
-
 class GameHandler(WebSocketHandler):
 
     game = game()

@@ -1,5 +1,5 @@
 from .Farm import Farm
 from .pUser import BaseUser
 from .Suit import Suit
-
-__all__ = ["Farm", "BaseUser", "Suit"]
+from .Task import Task
+# __all__ = ["Farm", "BaseUser", "Suit"]

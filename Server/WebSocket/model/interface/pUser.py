@@ -22,13 +22,15 @@ class BaseUser(object):
         # 初始化数据
         await self.initData()
 
-    
     async def close(self):
         self.logouttime = time.time()*1000
     #初始化部分数据
     async def initData(self):
         # 初始化玩家数据
         await self.DBM.initplayerdata(self.cid)
+
+    async def SaveData(self):
+        await self.DBM.Save_BaseData(self)
 
     # 接受消息
     async def ClientToServer(self,msg):
