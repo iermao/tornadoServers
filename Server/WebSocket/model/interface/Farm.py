@@ -18,6 +18,9 @@ from tornado import gen
 class Farm(object):
     def __init__(self):
 
+        # 所有种植过的植物数据
+        self.allplantdata = {}
+
         # 初始化植物数据
         self.plantdata = {}
         # 初始化种子数据
@@ -30,6 +33,7 @@ class Farm(object):
         pass
 
     async def initData(self):
+        # 当前种植的植物数据
         plantdata = await self.DBM.getSeedAndPlantData(self.cid)
         self.plantdata = plantdata["plantdata"]
         self.seeddata = plantdata["seeddata"]
@@ -152,6 +156,9 @@ class Farm(object):
 
     # 土地种植种子
     async def C_Plant_seed(self, plantindex, seedid):
+
+        _state = False
+
         if (await self.have_seed(seedid) is True):
             _plantobj = self.plantobj[plantindex]
             if (_plantobj != None and _plantobj.langstate == 1):
@@ -162,9 +169,14 @@ class Farm(object):
                 rec_seedstate = await self.Rec_seed(seedid, 1)
                 if (rec_seedstate):
                     self.plantobj[plantindex] = _newPlant
+                    _state = True
 
         await self.SendOnePlant(plantindex)
         await self.Sendseeddata()
+
+        # 记录log
+        if (_state):
+            await self.DBM.log_plant(self, plantindex, seedid, "log_farm_plant")
 
     # 状态按钮点击
     async def C_Plant_pick(self, plantindex):
@@ -185,7 +197,8 @@ class Farm(object):
 
             # 收获这里要给玩家增加游戏币以及衣服数据
             elif (_plantobj.step == 4 and _plantobj.moneystate == 0 and _plantobj.waterstate == 0):
-                seeddata = ConfigData.seed_Data[_plantobj.seedid]
+                _seedid = _plantobj.seedid
+                seeddata = ConfigData.seed_Data[_seedid]
                 suitid = int(seeddata["suitId"])
                 suitdata = ConfigData.suit_Data[suitid]
                 dresslist = eval(suitdata["dressIds"])
@@ -193,6 +206,9 @@ class Farm(object):
                 _index = dresslist[_random]
                 await self.add_suit(_index)
                 await _plantobj.Harvest()
+
+                # 记录log
+                await self.DBM.log_plant(self, plantindex, _seedid, "log_farm_harvest")
             else:
                 pass
         await self.SendOnePlant(plantindex)

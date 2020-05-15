@@ -188,6 +188,7 @@ class dbmanage():
         sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid)
         await self.dbhelper.execute(sql)
 
+    # 保存衣服以及当前穿戴数据
     async def Save_homedata(self, _puser):
         sql = "UPDATE `player` set `suitdata` = '{0}',  `dressdata` = '{1}' where cid = {2} ;"
 
@@ -197,6 +198,7 @@ class dbmanage():
         sql = sql.format(_suitdata, _dressdata, _puser.cid)
         await self.dbhelper.execute(sql)
 
+    # 保存农场以及种子数据
     async def Save_farmdata(self, _puser):
         sql = "UPDATE `player` set `plantdata` = '{0}',  `seeddata` = '{1}' where cid = {2} ;"
 
@@ -207,6 +209,7 @@ class dbmanage():
         await self.dbhelper.execute(sql)
         pass
 
+    # 保存任务数据
     async def Save_taskdata(self, _puser):
         sql = "UPDATE `player_taskdata` set `data` = '{0}' where cid = {1} ;"
         _data = json.dumps(_puser.taskdata)
@@ -214,7 +217,35 @@ class dbmanage():
         await self.dbhelper.execute(sql)
         pass
 
+    # 保存成就数据
+    async def Save_achievedata(self, _puser):
+        sql = "UPDATE `player_achievedata` set `data` = '{0}' where cid = {1} ;"
+        _data = json.dumps(_puser.achievedata)
+        sql = sql.format(_data, _puser.cid)
+        await self.dbhelper.execute(sql)
+        pass
+
     # ************************************************************************
     # 保存数据
+    # 结束
+    # ************************************************************************
+
+    # ************************************************************************
+    # log数据
+    # 开始
+    # ************************************************************************
+    async def log_plant(self, _puser, plantindex, sedid, table):
+        sql = "insert into `{0}` (`createtime`,`cid`,`plantindex`,`seedid`) values ({1},{2},{3},{4});"
+        _time = 0
+        _time = int(round(time.time() * 1000))  #time.time()
+        sql = sql.format(table, _time, _puser.cid, plantindex, sedid)
+        try:
+            await self.dbhelper.execute(sql)
+        except Exception as e:
+            print("log err " + str(e))
+            return False
+
+    # ************************************************************************
+    # log数据
     # 结束
     # ************************************************************************
