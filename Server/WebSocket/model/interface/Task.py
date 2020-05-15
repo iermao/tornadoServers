@@ -2,6 +2,9 @@
 # Author: iermao
 # Python 3.6.6
 
+# 任务模块
+# 成就模块
+
 import json
 import time
 
@@ -19,17 +22,21 @@ class Task(object):
     async def init(self):
         pass
 
+    # 初始化任务数据
     async def initData(self):
         await self.inittaskdata()
         await self.sendtaskdata()
 
+    # 保存任务数据
     async def SaveData(self):
         await self.DBM.Save_taskdata(self)
 
+    # 发送所有任务数据
     async def sendtaskdata(self):
         _msg = {"id": MsgDefine.USER_MSG_INITTASKDATA, "data": self.taskdata}
         await self.ToClientMsg(_msg)
 
+    # 初始化任务数据
     async def inittaskdata(self):
         for key in ConfigData.renwu_Data.keys():
             _data = TaskData()
@@ -42,6 +49,10 @@ class Task(object):
 
             self.taskdata[str(_data.id)] = _tmpdata
             self.taskobjlist[_data.id] = _data
+
+    # 做任务
+    async def do_task(self, _taskid):
+        pass
 
 
 class TaskData():

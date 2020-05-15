@@ -1,3 +1,9 @@
+# -*- coding:utf-8 -*-
+# Author: iermao
+# Python 3.6.6
+
+# 玩家模块 ----会继承其他几个模块
+
 # import os
 import json
 import time

@@ -1,3 +1,9 @@
+# -*- coding:utf-8 -*-
+# Author: iermao
+# Python 3.6.6
+
+# 花园模块
+
 import json
 import time
 import random
