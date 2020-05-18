@@ -56,7 +56,7 @@ class Task(object):
                 await _data.init_db(self.taskdata[str(key)])
             else:
                 await _data.init_new(key)
-            print(key, _data.id)
+            # print(key, _data.id)
             _tmpdata = await _data.To_arr()
 
             self.taskdata[str(_data.id)] = _tmpdata
@@ -79,7 +79,7 @@ class Task(object):
                 await _data.init_db(self.achievedata[str(key)])
             else:
                 await _data.init_new(key)
-            print(key, _data.id)
+            # print(key, _data.id)
             _tmpdata = await _data.To_arr()
 
             self.achievedata[str(_data.id)] = _tmpdata
