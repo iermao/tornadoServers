@@ -26,7 +26,7 @@ class app():
 
     def AppStart(self):
 
-        options.parse_command_line()  # 允许命令行启动程序
+        options.parse_command_line()  # 允许命令行启动程序 
         app = tornado.web.Application(
             urls,
             websocket_ping_interval=5,
