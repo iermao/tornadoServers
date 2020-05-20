@@ -94,11 +94,13 @@ class Farm(object):
         if (_moneytype == 1):
             if (await self.get_gamemoney() < __needmoney):  # 货币不足
                 # 发送消息货币不足
+                await self.SendToClientTips(101002)
                 return False
         # 钻石
         elif (_moneytype == 2):
             if (await self.get_paymoney() < __needmoney):  # 货币不足
                 # 发送消息货币不足
+                await self.SendToClientTips(101003)
                 return False
 
         _addseedstate = await self.Add_seed(_seedid, _count)
@@ -178,7 +180,10 @@ class Farm(object):
         if (_state):
             await self.DBM.log_plant(self, plantindex, seedid, "log_farm_plant")
 
-    # 状态按钮点击
+        # 做任务类型为2的任务【种植】
+        await self.do_task_type(2)
+
+    # 状态按钮点击（浇水以及阶段奖励）
     async def C_Plant_pick(self, plantindex):
 
         _plantobj = self.plantobj[plantindex]
@@ -194,23 +199,46 @@ class Farm(object):
                     await self.addexp(_exp)
             elif (_plantobj.waterstate == 1):
                 _state = await _plantobj.Water()
+            else:
+                pass
+        await self.SendOnePlant(plantindex)
 
+    # 收获按钮点击
+    async def C_Plant_Havest(self, plantindex, _type):
+        _plantobj = self.plantobj[plantindex]
+        if (_plantobj != None):
             # 收获这里要给玩家增加游戏币以及衣服数据
-            elif (_plantobj.step == 4 and _plantobj.moneystate == 0 and _plantobj.waterstate == 0):
+            if (_plantobj.step == 4 and _plantobj.moneystate == 0 and _plantobj.waterstate == 0):
+
                 _seedid = _plantobj.seedid
                 seeddata = ConfigData.seed_Data[_seedid]
                 suitid = int(seeddata["suitId"])
                 suitdata = ConfigData.suit_Data[suitid]
                 dresslist = eval(suitdata["dressIds"])
-                _random = random.randint(0, len(dresslist) - 1)
-                _index = dresslist[_random]
+                # 消耗金币收获
+                if (_type == 1):
+                    _money = seeddata["callGemsRate"]
+                    _state = await self.rec_gamemoney(_money)
+                    if (_state == False):
+                        await self.SendToClientTips(101002)
+                        return False
+                    _random = random.randint(0, len(dresslist) - 1)
+                    _index = dresslist[_random]
+                # 消耗钻石收获
+                if (_type == 2):
+                    _money = seeddata["callGems"]
+                    _state = await self.rec_paymoney(_money)
+                    if (_state == False):
+                        await self.SendToClientTips(101003)
+                        return False
+                    _random = random.randint(0, len(dresslist) - 1)
+                    _index = dresslist[_random]
+
                 await self.add_suit(_index)
                 await _plantobj.Harvest()
-
                 # 记录log
                 await self.DBM.log_plant(self, plantindex, _seedid, "log_farm_harvest")
-            else:
-                pass
+
         await self.SendOnePlant(plantindex)
 
     # 检测是否完成
@@ -221,6 +249,28 @@ class Farm(object):
             await _plantobj.changeState()
 
         await self.SendOnePlant(plantindex)
+
+    #开垦新的土地
+    async def C_New_Plant(self, plantindex):
+        _plantobj = self.plantobj[plantindex]
+        if (_plantobj != None):
+            if (_plantobj.langstate == 0):
+
+                _type = ConfigData.land_Data[1000 + plantindex + 1]["unlocktype"]
+                _money = ConfigData.land_Data[1000 + plantindex + 1]["unlocknumber"]
+                _needtittle = ConfigData.land_Data[1000 + plantindex + 1]["unlockfame"]
+                _nowtittle = ConfigData.level_Data[self.basedata["level"]]["fame"]
+
+                if (_nowtittle < _needtittle):
+                    await self.SendToClientTips(101098)
+                    return False
+                if (_type == 2):  # 消耗的是游戏币
+                    _recstate = await self.rec_gamemoney(_money)
+                elif (_type == 3):  # 消耗的是钻石
+                    _recstate = await self.rec_paymoney(_money)
+                if (_recstate):  # 消耗成功
+                    _plantobj.langstate = 1
+                    await self.SendOnePlant(plantindex)
 
 
 class PlantData(object):

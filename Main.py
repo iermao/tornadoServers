@@ -28,5 +28,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, term_sig_handler)
     signal.signal(signal.SIGTERM, term_sig_handler)
 
+    print('start arg 1:', str(sys.argv))
     print("run  in  {}".format(os.getpid()))
-    app()
+    if (str(sys.argv[1]) == "start"):
+        app()

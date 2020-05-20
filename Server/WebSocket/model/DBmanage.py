@@ -73,7 +73,7 @@ class dbmanage():
 
     #获得玩家基础数据
     async def getBaseData(self, cid):
-        sql = "select `cid`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`suitdata`,`dressdata`,`plantdata`,`seeddata` from `player` where cid = {0}"
+        sql = "select `cid`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`allonline`,`dayonline`,`logintime`,`logouttime` from `player` where cid = {0}"
         sql = sql.format(cid)
         _data = await self.dbhelper.Seldata(sql)
         _list = {}
@@ -85,6 +85,10 @@ class dbmanage():
             _list["exp"] = _data[4]
             _list["gamemoney"] = _data[5]
             _list["paymoney"] = _data[6]
+            _list["allonline"] = _data[7]
+            _list["dayonline"] = _data[8]
+            _list["logintime"] = _data[9]
+            _list["logouttime"] = _data[10]
         return _list
 
     # 获得玩家换装以及获得的装备
@@ -122,7 +126,24 @@ class dbmanage():
         _list = {}
         if (_data != None):
             _list["cid"] = _data[0]
-            _list["data"] = {}
+            if (_data[1] != ""):
+                _list["data"] = eval(_data[1])
+            else:
+                _list["data"] = {}
+        return _list
+
+    # 获得玩家成就数据
+    async def getachievedata(self, cid):
+        sql = "select `cid`,`data` from `player_achievedata` where cid = {0}"
+        sql = sql.format(cid)
+        _data = await self.dbhelper.Seldata(sql)
+        _list = {}
+        if (_data != None):
+            _list["cid"] = _data[0]
+            if (_data[1] != ""):
+                _list["data"] = eval(_data[1])
+            else:
+                _list["data"] = {}
         return _list
 
     # ************************************************************************
@@ -184,8 +205,8 @@ class dbmanage():
 
     #保存玩家基础数据
     async def Save_BaseData(self, _puser):
-        sql = "UPDATE `player` set `logintime` = {0},  `logouttime` = {1}, `level` = {2},  `exp` = {3},  `gamemoney` = {4},  `paymoney` = {5}  where cid = {6} ;"
-        sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid)
+        sql = "UPDATE `player` set `logintime` = {0},  `logouttime` = {1}, `level` = {2},  `exp` = {3},  `gamemoney` = {4},  `paymoney` = {5},  `allonline` = {7},  `dayonline` = {8}  where cid = {6} ;"
+        sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid, _puser.basedata["allonline"], _puser.basedata["dayonline"])
         await self.dbhelper.execute(sql)
 
     # 保存衣服以及当前穿戴数据

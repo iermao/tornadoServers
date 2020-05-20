@@ -3,6 +3,8 @@
 # Python 3.6.6
 
 import os
+import sys
+import tornado
 from tornado.websocket import WebSocketHandler
 
 from .WebSocket.Game import game
@@ -18,9 +20,20 @@ class CurrentUser(object):
         self.keys = ""
         self.cid = 0
 
+
 class GameHandler(WebSocketHandler):
 
+    # print('start arg 2:', str(sys.argv))
     game = game()
+
+    # def loopTimer():
+    #     if (game != None):
+    #         # pass
+    #         game.loopstatatta = True
+
+    # tornado.ioloop.PeriodicCallback(loopTimer, 2000).start()
+
+    # if (str(sys.argv[1]) == "save"):
 
     def get_current_user(self):
         uid = self.get_argument(name='uid', default='None')

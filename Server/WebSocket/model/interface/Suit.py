@@ -18,6 +18,9 @@ class Suit(object):
         self.suitdata = []
         # 当前衣服物品数据
         self.dressdata = []
+
+        # 待出售的衣服临时数据
+        self.soldsuit = []
         pass
 
     async def init(self):
@@ -32,6 +35,11 @@ class Suit(object):
         await self.Senddressdata()
 
     async def SaveData(self):
+        if (len(self.soldsuit) > 0):
+            for _id in self.soldsuit:
+                await self.C_Plant_soldsuit(_id)
+        self.soldsuit = []
+
         await self.DBM.Save_homedata(self)
 
     async def Sendsuitdata(self):
@@ -44,12 +52,20 @@ class Suit(object):
 
     # 增加衣服数据
     async def add_suit(self, dressid):
-        # print("add_suit", self.dressdata)
+
+        # 做任务
+
         if (dressid in self.dressdata):
-            pass
+            _data = {"id": dressid, "sta": 1}
+            self.soldsuit.append(dressid)
         else:
             self.dressdata.append(dressid)
+            _data = {"id": dressid, "sta": 0}
+        _msg = {"id": MsgDefine.USER_MSG_PLANT_HARVEST, "data": _data}
+        await self.ToClientMsg(_msg)
         await self.Senddressdata()
+        # 做任务类型为1的任务【召唤衣服】
+        await self.do_task_type(1)
 
     # 换衣服
     async def C_Suit_Change(self, dressid):
@@ -58,3 +74,15 @@ class Suit(object):
             _partTag = int(_tmpdata['partTag'])
             self.suitdata[_partTag] = dressid
         await self.Sendsuitdata()
+
+    # 出售多余的衣服
+    async def C_Plant_soldsuit(self, dressid):
+        _tmpdata = ConfigData.dress_Data[dressid]
+        if (_tmpdata != None):
+            _type = _tmpdata["sellType"]
+            _money = _tmpdata["sellPrice"]
+            if (_type == 1):
+                _state = await self.add_gamemoney(_money)
+            if (_type == 2):
+                _state = await self.add_paymoney(_money)
+            self.soldsuit.remove(dressid)

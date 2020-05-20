@@ -26,7 +26,7 @@ class app():
 
     def AppStart(self):
 
-        options.parse_command_line()  # 允许命令行启动程序 
+        options.parse_command_line()  # 允许命令行启动程序
         app = tornado.web.Application(
             urls,
             websocket_ping_interval=5,
@@ -42,6 +42,7 @@ class app():
         print("websocket server run port = {0}".format(options.port))
         # http_server.start(4)
         tornado.ioloop.IOLoop.instance().start()  # 启动应用
+
 
 if __name__ == '__main__':
     app()

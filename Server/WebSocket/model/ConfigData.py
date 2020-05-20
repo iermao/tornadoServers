@@ -73,3 +73,9 @@ suit_Data = initCon(suit)
 # themeModelReward_Data = initCon(themeModelReward)
 # UITexture_Data = initCon(UITexture)
 # yaoshui_Data = initCon(yaoshui)
+
+
+def GetMsgstr(id):
+    _data = Message_Data[id]
+    if (_data != None):
+        return _data["info_cn"]

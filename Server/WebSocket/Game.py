@@ -8,6 +8,7 @@
 import json
 import time
 import hashlib
+import tornado
 
 from .model.Player import Player
 from .model.DBmanage import dbmanage
@@ -30,7 +31,11 @@ class game(object):
         # 初始化配置数据
         ConfigData.init()
 
+        tornado.ioloop.PeriodicCallback(self.loopTimer, 2000).start()
+
     # 创建新链接用户
+    def loopTimer(self):
+        print("game  loopTimer ", len(self.playerList))
 
     async def NewUser(self, nobj):
         print("NewUser nobjs length", len(self.nobjs))
