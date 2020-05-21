@@ -23,16 +23,36 @@ class BaseUser(object):
         self.pobj = _user
         self.logintime = time.time() * 1000
         self.logouttime = time.time() * 1000
-        self.foronlinetime = time.time() * 1000  # 计算在下时间用的
+        self.foronlinetime = time.time() * 1000  # 计算在线时间开始时间
         self.DBM = _DBM
         # 初始化数据
         await self.initInsertData()
-
+        # 存档时间
         self.savetime = time.time()
+        # 在线时间发送时间
+        self.sendonline = time.time()
 
     async def timersavedata(self):
-        self.savetime = time.time()
-        await self.SaveData_ALL()
+        _times = time.time()
+        # 每个用户自动存档时间5分钟
+        if ((_times - self.savetime) / 60.0 >= 5):
+            self.savetime = time.time()
+            await self.SaveData_ALL()
+
+        # 检测是否需要发送在线数据
+        await self.checksendonlinetime()
+
+    async def checksendonlinetime(self):
+        _times = time.time()
+        # 1分钟发送一次在线时间
+        if ((_times - self.sendonline) / 60.0 >= 1):
+            # 计算在线时间本次在线时间
+            _online = (time.time() - self.foronlinetime / 1000) / 60
+            self.basedata["allonline"] = self.basedata["allonline"] + _online
+            self.basedata["dayonline"] = self.basedata["dayonline"] + _online
+            self.foronlinetime = time.time() * 1000  # 计算在线时间
+            self.sendonline = time.time()
+            await self.SendBasedata_bykey("dayonline", self.basedata["dayonline"])
 
     async def close(self):
         self.logouttime = time.time() * 1000
@@ -43,14 +63,25 @@ class BaseUser(object):
         await self.DBM.initplayerdata(self.cid)
 
     async def SaveData(self):
-
-        # 本次在线时间
-        _online = (time.time() - self.foronlinetime / 1000) / 60
-        self.basedata["allonline"] = self.basedata["allonline"] + _online
-        self.basedata["dayonline"] = self.basedata["dayonline"] + _online
-        self.foronlinetime = time.time() * 1000  # 计算在下时间用的
-
         await self.DBM.Save_BaseData(self)
+
+    # 发送单个用户数据
+    # ["cid"] = _data[0]
+    # ["nick"] = _data[1]
+    # ["sex"] = _data[2]
+    # ["level"] = _data[3]
+    # ["exp"] = _data[4]
+    # ["gamemoney"] = _data[5]
+    # ["paymoney"] = _data[6]
+    # ["allonline"] = _data[7]
+    # ["dayonline"] = _data[8]
+    # ["logintime"] = _data[9]
+    # ["logouttime"] = _data[10]
+    async def SendBasedata_bykey(self, _key, _val):
+        _data = {"key": _key, "val": _val}
+        _msg = {"id": MsgDefine.USER_MSG_BASEDATA_KVAL, "mid": MsgDefine.BASEMSG, "data": _data}
+        print("SendBasedata_bykey", _msg)
+        await self.ToClientMsg(_msg)
 
     # 接受消息
     async def ClientToServer(self, msg):
@@ -91,6 +122,11 @@ class BaseUser(object):
         elif (_msgid == MsgDefine.USER_MSG_TASKREWARD):  # 任务领取
             await self.client_taskreward(_msg["data"])
 
+        elif (_msgid == MsgDefine.USER_MSG_ONLINEREWARD):  # 在线领取
+            await self.client_onlinereward(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_OPENSCENE):  # 开放场景
+            await self.client_openscene(_msg["data"])
         elif (False):
             pass
         else:
@@ -101,6 +137,7 @@ class BaseUser(object):
         # print(msg)
         _msg = json.dumps(msg)
         # print(_msg)
+        # if(self.pobj.close)
         self.pobj.write_message(_msg)
 
     async def SendToClientTips(self, id):
@@ -118,10 +155,8 @@ class BaseUser(object):
 
     # 心跳数据
     async def client_Hertbeat(self):
-        print("client_Hertbeat")
-        _times = time.time()
-        if ((_times - self.savetime) / 60.0 >= 5):
-            await self.timersavedata()
+        # print("client_Hertbeat")
+        await self.timersavedata()
 
     # 买种子
     async def client_buyseed(self, msg):
@@ -138,7 +173,8 @@ class BaseUser(object):
     # 土地状态点击
     async def client_plantpick(self, msg):
         index = int(msg['index'])
-        await self.C_Plant_pick(index)
+        _type = int(msg['type'])
+        await self.C_Plant_pick(index, _type)
 
     # 检测土地状态
     async def client_plantcheckstate(self, msg):
@@ -170,3 +206,14 @@ class BaseUser(object):
     async def client_taskreward(self, msg):
         _id = int(msg['id'])
         await self.C_task_reward(_id)
+
+    # 在线领取奖励
+    async def client_onlinereward(self, msg):
+        _id = int(msg['id'])
+        _itemid = int(msg['itemid'])
+        await self.C_online_reward(_id, _itemid)
+
+    # 开放场景
+    async def client_openscene(self, msg):
+        _id = int(msg['id'])
+        await self.C_openscene(_id)

@@ -53,6 +53,7 @@ class GameHandler(WebSocketHandler):
     # @tornado.web.authenticated
     async def open(self):
         print('WebSocket open')
+        # if(self.close)
         state, msg = await self.game.NewUser(self)
         if state == False:
             await self.close()

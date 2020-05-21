@@ -56,7 +56,7 @@ class Player(BaseUser, Suit, Farm, Task):
         # 基础数据
         self.basedata = await self.DBM.getBaseData(self.cid)
 
-        print("initData", self.basedata)
+        # print("initData", self.basedata)
         # 获取上次登录时间
         _lastlogintime = self.basedata["logintime"] / 1000
         _nowlogintime = time.time()
@@ -72,6 +72,7 @@ class Player(BaseUser, Suit, Farm, Task):
     # 新的一滩需要重置的数据
     async def NewDay(self):
         self.basedata["dayonline"] = 0
+        self.dayonlinerew = []
 
     # 登录初始化发送数据---begin
     async def Sendbasedata(self):

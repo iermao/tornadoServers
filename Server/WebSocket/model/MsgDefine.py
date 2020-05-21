@@ -11,6 +11,18 @@ USER_MSG_DRESSDATA = 20003
 USER_MSG_PLANTDATA = 20004
 USER_MSG_SEEDDATA = 20005
 
+# 发送单个用户数据
+
+# ***** 需要单独发送的数据可以使用这个消息ID然后在加上其他定义的单个数据id来发送数据***
+
+USER_MSG_BASEDATA_KVAL = 20006
+
+# 发送单个用户数据 ----玩家基础数据
+BASEMSG = 1001
+
+# 发送单个用户数据 ----
+PLANTMSG = 2001
+
 # 购买种子
 USER_MSG_BUYSEED = 21000
 
@@ -40,12 +52,17 @@ USER_MSG_INITTASKDATA=24000
 # // 任务领取
 USER_MSG_TASKREWARD=24001
 
-
-
 # 发送成就数据
 USER_MSG_INITACHIEVEDATA = 25000
 
-
+# 发送在线奖励数据
+USER_MSG_ONLINEREWARDINIT = 26000
+# // 在线领取奖励
+USER_MSG_ONLINEREWARD = 26001
+# // 初始化发送开放场景数据
+USER_MSG_OPENSCENEDATA = 26002
+# // 开放场景
+USER_MSG_OPENSCENE = 26003
 
 # 发送统一消息数据
 GAME_MSG_TIPSMSG = 90000

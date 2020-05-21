@@ -184,23 +184,34 @@ class Farm(object):
         await self.do_task_type(2)
 
     # 状态按钮点击（浇水以及阶段奖励）
-    async def C_Plant_pick(self, plantindex):
+    async def C_Plant_pick(self, plantindex, _type):
 
         _plantobj = self.plantobj[plantindex]
         if (_plantobj != None):
-            # print(self.cid, plantindex, _plantobj.seedid, await _plantobj.Toarr())
-            if (_plantobj.moneystate == 1):
-                _state = await _plantobj.pickmoney()
-                if (_state == True):  # 加钱加经验
-                    _money = await _plantobj.GetStep_rewardCoins()
-                    _exp = await _plantobj.getstep_rewardExps()
+            if (_type == 0):  # 收钱或者浇水
+                if (_plantobj.moneystate == 1):
+                    _state = await _plantobj.pickmoney()
+                    if (_state == True):  # 加钱加经验
+                        _money = await _plantobj.GetStep_rewardCoins()
+                        _exp = await _plantobj.getstep_rewardExps()
 
-                    await self.add_gamemoney(_money)
-                    await self.addexp(_exp)
-            elif (_plantobj.waterstate == 1):
-                _state = await _plantobj.Water()
-            else:
-                pass
+                        await self.add_gamemoney(_money)
+                        await self.addexp(_exp)
+                elif (_plantobj.waterstate == 1):
+                    _state = await _plantobj.Water()
+                else:
+                    pass
+            if (_type == 1):  # 加速
+                # print("speed")
+                _mins = await _plantobj.getnexttime()
+                # print("speed", _mins)
+                if (_mins > 0):
+                    _needmoney = _mins * 2
+                    # print("speed", _mins, _needmoney)
+                    _state = await self.rec_paymoney(_needmoney)
+                    # print("speed", _mins, _needmoney, _state)
+                    if (_state):
+                        await _plantobj.speed()
         await self.SendOnePlant(plantindex)
 
     # 收获按钮点击
@@ -368,10 +379,10 @@ class PlantData(object):
             return False
 
         # print(self.watertimes, _steptime)
-        _neewtimes = float(self.watertimes / 1000.00) + float(_steptime)
+        _needtimes = float(self.watertimes / 1000.00) + float(_steptime)
 
         # print(_neewtimes, _steptime, _seeddata)
-        if (_neewtimes <= time.time()):
+        if (_needtimes <= time.time()):
             self.step += 1
             if (self.step == 4):
                 self.moneystate = 1
@@ -380,6 +391,35 @@ class PlantData(object):
                 self.moneystate = 1
             return True
         return False
+
+    # 获取剩余多少时间完成
+    async def getnexttime(self):
+        _now = time.time()
+        _steptime = await self.GetStepTimes()
+
+        if (_steptime <= 0):
+            return 0
+
+        _watertime = float(self.watertimes / 1000.00)
+
+        _needtimes = (_watertime + _steptime) - _now
+        if (_needtimes <= 0):
+            return 0
+
+        # //计算还需要多少分钟
+        mins = int((_needtimes + 60) / 60)
+
+        return mins
+
+    # 加速
+    async def speed(self):
+        self.step += 1
+        if (self.step == 4):
+            self.moneystate = 1
+        else:
+            self.waterstate = 1
+            self.moneystate = 1
+        return True
 
     # 获取当前阶段需要时间
     async def GetStepTimes(self):

@@ -35,11 +35,7 @@ class Suit(object):
         await self.Senddressdata()
 
     async def SaveData(self):
-        if (len(self.soldsuit) > 0):
-            for _id in self.soldsuit:
-                await self.C_Plant_soldsuit(_id)
-        self.soldsuit = []
-
+        await self.sold_moresuit()
         await self.DBM.Save_homedata(self)
 
     async def Sendsuitdata(self):
@@ -86,3 +82,10 @@ class Suit(object):
             if (_type == 2):
                 _state = await self.add_paymoney(_money)
             self.soldsuit.remove(dressid)
+
+    # 存档查看是否有没有出售的衣服
+    async def sold_moresuit(self):
+        if (len(self.soldsuit) > 0):
+            for _id in self.soldsuit:
+                await self.C_Plant_soldsuit(_id)
+        self.soldsuit = []

@@ -24,14 +24,21 @@ class Task(object):
         self.achievedata = {}
         self.achieveobjlist = {}
 
+        # 在线奖励数据
+        self.dayonlinerew = []
+
+        #玩家开放场景数据
+        self.openscene = []
+
     async def init(self):
         pass
 
     # 初始化任务数据
     async def initData(self):
-
         _taskdata = await self.DBM.gettaskdata(self.cid)
         self.taskdata = _taskdata["data"]
+        self.dayonlinerew = _taskdata["dayonlinerew"]
+        self.openscene = _taskdata["openscene"]
 
         _achievedata = await self.DBM.getachievedata(self.cid)
         self.achievedata = _achievedata["data"]
@@ -43,6 +50,10 @@ class Task(object):
 
         await self.sendtaskdata()
 
+        await self.sendonlinerewdata()
+
+        await self.sendopenscenedata()
+
         await self.sendachievedata()
 
     # 保存数据
@@ -53,6 +64,16 @@ class Task(object):
     # 发送所有任务数据
     async def sendtaskdata(self):
         _msg = {"id": MsgDefine.USER_MSG_INITTASKDATA, "data": self.taskdata}
+        await self.ToClientMsg(_msg)
+
+    # 初始化发送在线奖励数据
+    async def sendonlinerewdata(self):
+        _msg = {"id": MsgDefine.USER_MSG_ONLINEREWARDINIT, "data": self.dayonlinerew}
+        await self.ToClientMsg(_msg)
+
+    # 初始化发送开放场景数据
+    async def sendopenscenedata(self):
+        _msg = {"id": MsgDefine.USER_MSG_OPENSCENEDATA, "data": self.openscene}
         await self.ToClientMsg(_msg)
 
     # 初始化任务数据
@@ -111,6 +132,55 @@ class Task(object):
                 if (_reward_type == 2):
                     await self.add_paymoney(_reward_nums)
                 await self.sendtaskdata()
+
+    #在线领取奖励
+    async def C_online_reward(self, _onlineid, _itemid):
+        if (_onlineid not in self.dayonlinerew):
+            _con_data = ConfigData.onLine_Data[_onlineid]
+            if (_con_data != None):
+                _rewardType = _con_data['rewardType']
+                _rewardPra = eval(_con_data['rewardPra'])
+                _time = _con_data['time']
+                if (_time < self.basedata["dayonline"]):
+                    return False
+                # pass
+                if (_rewardType == 1):  # 奖励金币
+                    _count = _rewardPra[0]
+                    await self.add_gamemoney(_count)
+                elif (_rewardType == 2):  # 奖励钻石
+                    _count = _rewardPra[0]
+                    await self.add_paymoney(_count)
+                elif (_rewardType == 5):  # 奖励种子
+                    if (_itemid not in _rewardPra):
+                        return False
+                    _seedid = _itemid
+                    _count = _rewardPra[2]
+                    await self.Add_seed(_seedid, _count)  # 增加种子
+                elif (_rewardType == 7):  # 奖励衣服
+                    if (_itemid not in _rewardPra):
+                        return False
+                    _suitid = _itemid
+                    await self.add_suit(_suitid)  # 增加衣服
+                    await self.sold_moresuit()  # 出售多余的衣服
+
+                self.dayonlinerew.append(_onlineid)
+                await self.sendonlinerewdata()
+
+    # 开放场景
+    async def C_openscene(self, _id):
+        if (_id not in self.openscene):
+            _con_data = ConfigData.sceneSel_Data[_id]
+            if (_con_data != None):
+                unlockType = _con_data["unlockType"]
+                unlockNum = _con_data["unlockNum"]
+                _state = False
+                if (unlockType == 1):
+                    _state = await self.rec_gamemoney(unlockNum)
+                elif (unlockType == 2):
+                    _state = await self.rec_paymoney(unlockNum)
+                if (_state):
+                    self.openscene.append(_id)
+                await self.sendopenscenedata()
 
     # --------------------------------
     # -----------------成就数据相关

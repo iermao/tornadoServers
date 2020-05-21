@@ -51,14 +51,15 @@ class dbmanage():
             _time = time.time() * 1000
             sql = sql.format(cid, _time, _time, _time)
             await self.dbhelper.execute(sql)
+
         # 初始化任务表
         _tabletask = "player_taskdata"
         sql = "select cid from `{0}` where `cid` = {1}"
         sql = sql.format(_tabletask, cid)
         _data = await self.dbhelper.Seldata(sql)
         if (_data == None):
-            sql = "insert into `{0}` ( `cid`,`data`) values ({1},'{2}');"
-            sql = sql.format(_tabletask, cid, '')
+            sql = "insert into `{0}` ( `cid`,`data`,`dayonlinerew`) values ({1},'{2}','{3}');"
+            sql = sql.format(_tabletask, cid, '', '')
             await self.dbhelper.execute(sql)
 
         # 初始化成就表
@@ -120,7 +121,7 @@ class dbmanage():
 
     # 获得玩家任务数据
     async def gettaskdata(self, cid):
-        sql = "select `cid`,`data` from `player_taskdata` where cid = {0}"
+        sql = "select `cid`,`data`,`dayonlinerew`,`openscene` from `player_taskdata` where cid = {0}"
         sql = sql.format(cid)
         _data = await self.dbhelper.Seldata(sql)
         _list = {}
@@ -130,6 +131,28 @@ class dbmanage():
                 _list["data"] = eval(_data[1])
             else:
                 _list["data"] = {}
+
+            # 获取在线数据
+            if (_data[2] != "" and _data[2] != None):
+                _tmpdata = eval(_data[2])
+                if (len(_tmpdata) < 1):
+                    _list["dayonlinerew"] = []
+                else:
+                    _list["dayonlinerew"] = _tmpdata
+            else:
+                _list["dayonlinerew"] = []
+
+            # 获取场景数据
+            print(_data[3])
+            if (_data[3] != "" and _data[3] != None):
+                _tmpdata = eval(_data[3])
+                if (len(_tmpdata) < 1):
+                    _list["openscene"] = []
+                else:
+                    _list["openscene"] = _tmpdata
+            else:
+                _list["openscene"] = []
+
         return _list
 
     # 获得玩家成就数据
@@ -232,9 +255,11 @@ class dbmanage():
 
     # 保存任务数据
     async def Save_taskdata(self, _puser):
-        sql = "UPDATE `player_taskdata` set `data` = '{0}' where cid = {1} ;"
+        sql = "UPDATE `player_taskdata` set `data` = '{0}', `dayonlinerew` = '{2}', `openscene` = '{3}'  where cid = {1} ;"
         _data = json.dumps(_puser.taskdata)
-        sql = sql.format(_data, _puser.cid)
+        _dayonlinerewdata = json.dumps(_puser.dayonlinerew)
+        _openscene = json.dumps(_puser.openscene)
+        sql = sql.format(_data, _puser.cid, _dayonlinerewdata, _openscene)
         await self.dbhelper.execute(sql)
         pass
 

@@ -4,7 +4,7 @@
 
 # 玩家模块 ----会继承其他几个模块
 
-# import os
+import os
 import json
 import time
 import hashlib
@@ -31,11 +31,28 @@ class game(object):
         # 初始化配置数据
         ConfigData.init()
 
-        tornado.ioloop.PeriodicCallback(self.loopTimer, 2000).start()
+        self.starttime = time.time()
+
+        self.printtime = time.time()
+
+        tornado.ioloop.PeriodicCallback(self.loopTimer, 1000).start()
 
     # 创建新链接用户
-    def loopTimer(self):
-        print("game  loopTimer ", len(self.playerList))
+    async def loopTimer(self):
+        _time = time.time()
+        _mins = int((_time - self.starttime) / 60)  # 运行时间
+
+        _nextpainttime = _time - self.printtime
+        if (_nextpainttime > 10):
+            self.printtime = time.time()
+            print("Server Start {0} mins, pid [{1}], nobjs [{2}], plist [{3}]".format(str(_mins), str(os.getpid()), str(len(self.nobjs)), str(len(self.playerList))))
+
+        # if (_mins % 2 == 0 and _mins > 0):
+        #     print("Server Start {0} mins, pid [{1}]".format(str(_mins), str(os.getpid())))
+        #     pass
+
+        for _pUser in self.playerList.values():
+            await _pUser.timersavedata()
 
     async def NewUser(self, nobj):
         print("NewUser nobjs length", len(self.nobjs))
@@ -154,9 +171,9 @@ class game(object):
         # print("close")
         if (nobj in self.nobjs):
             print(nobj.current_user.uid, " close")
-            self.nobjs.remove(nobj)
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
                 await puser.close()
                 await puser.SaveData_ALL()
             await self.DelPlayerList(nobj)
+            self.nobjs.remove(nobj)
