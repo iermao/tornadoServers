@@ -35,7 +35,7 @@ class app():
             login_url='/login',
             # xsrf_cookies=False,
             # cookie_secret="2hcicVu+TqShDpfsjMWQLZ0Mkq5NPEWSk9fi0zsSt3A=",
-            debug=True,
+            debug=False,
         )
         http_server = tornado.httpserver.HTTPServer(app)  # 将应用处理逻辑 传递给HTTPServer 服务
         http_server.listen(options.port)  # 配置监听地址到 HTTPServe

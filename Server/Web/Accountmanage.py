@@ -10,7 +10,7 @@ from tornado_mysql import pools
 
 
 class Account():
-    POOL = pools.Pool(dict(host='127.0.0.1', port=3306, user='root', passwd='root', db='gardendressup'), max_idle_connections=1, max_recycle_sec=3)
+    POOL = pools.Pool(dict(host='127.0.0.1', port=3306, user='root', passwd='root', db='gardendressup', charset='utf8'), max_idle_connections=1, max_recycle_sec=3)
 
     def __init__(self):
         pass

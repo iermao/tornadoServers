@@ -23,8 +23,9 @@ from . import MsgDefine
 #玩家
 class Player(BaseUser, Suit, Farm, Task):
     def __init__(self):
+        self.herttime = time.time()
         # 玩家数据
-        self.loopstatatta = False
+
         self.basedata = {}
         self.newday = False
         BaseUser.__init__(self)
@@ -46,33 +47,32 @@ class Player(BaseUser, Suit, Farm, Task):
         await Suit.initData(self)
         await Farm.initData(self)
         await Task.initData(self)
-        pass
-        # print(ConfigData.level_Data)
-        # self.add_gamemoney(1000)
-        # self.add_paymoney(100)
+
+        if (self.newday):
+            await self.NewDay()
 
     # 登录获取数据
     async def initData(self):
         # 基础数据
         self.basedata = await self.DBM.getBaseData(self.cid)
 
-        # print("initData", self.basedata)
         # 获取上次登录时间
         _lastlogintime = self.basedata["logintime"] / 1000
         _nowlogintime = time.time()
-
         _days = Fun.get_delta_days(_lastlogintime, _nowlogintime)
         # 新的一天
         if (_days > 0):
             self.newday = True
-            await self.NewDay()
 
         await self.Sendbasedata()
 
     # 新的一滩需要重置的数据
     async def NewDay(self):
+        self.newday = True
         self.basedata["dayonline"] = 0
+        await self.Sendbasedata()
         self.dayonlinerew = []
+        await self.sendonlinerewdata()
 
     # 登录初始化发送数据---begin
     async def Sendbasedata(self):
@@ -106,6 +106,9 @@ class Player(BaseUser, Suit, Farm, Task):
         else:
             self.basedata["exp"] += _exp
 
+        _msg = {"id": 0, "data": "获得经验x" + str(_exp)}
+        await self.To_C_Tips(_msg)
+
         await self.Sendbasedata()
         return True
 
@@ -114,8 +117,12 @@ class Player(BaseUser, Suit, Farm, Task):
         _addlevel = int(_addlevel)
         if (_addlevel < 1):
             return False
+
         self.basedata["level"] += _addlevel
         self.basedata["exp"] = 0
+
+        await self.do_achieve_bytype(1, self.basedata["level"])  # # 触发成就---升级
+
         return True
 
     #获取游戏币
@@ -172,3 +179,29 @@ class Player(BaseUser, Suit, Farm, Task):
         self.basedata["paymoney"] -= _value
         await self.Sendbasedata()
         return True
+
+    # 幸运抽奖开始
+    async def C_Lucky_start(self, _type):
+        if (_type == 2):
+            await self.rec_paymoney(10)
+        self.basedata["lucktime"] = time.time() * 1000
+        return True
+
+    # 幸运抽奖奖励
+    async def C_Lucky_reward(self, _luckyid, _itemid):
+        _con_data = ConfigData.lucky_Data[_luckyid]
+        if (_con_data != None):
+            _rewardType = _con_data['rewardType']
+            _rewardPra = eval(_con_data['rewardPra'])
+            if (_rewardType == 1):  # 奖励金币
+                _count = _rewardPra[0]
+                await self.add_gamemoney(_count)
+            elif (_rewardType == 2):  # 奖励钻石
+                _count = _rewardPra[0]
+                await self.add_paymoney(_count)
+            elif (_rewardType == 5):  # 奖励种子
+                if (_itemid not in _rewardPra):
+                    return False
+                _seedid = _itemid
+                _count = _rewardPra[2]
+                await self.Add_seed(_seedid, _count)  # 增加种子

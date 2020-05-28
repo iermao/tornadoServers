@@ -26,15 +26,6 @@ class GameHandler(WebSocketHandler):
     # print('start arg 2:', str(sys.argv))
     game = game()
 
-    # def loopTimer():
-    #     if (game != None):
-    #         # pass
-    #         game.loopstatatta = True
-
-    # tornado.ioloop.PeriodicCallback(loopTimer, 2000).start()
-
-    # if (str(sys.argv[1]) == "save"):
-
     def get_current_user(self):
         uid = self.get_argument(name='uid', default='None')
         pwd = self.get_argument(name='pwd', default='None')

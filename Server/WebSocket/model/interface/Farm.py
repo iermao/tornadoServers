@@ -34,15 +34,20 @@ class Farm(object):
 
     async def initData(self):
         # 当前种植的植物数据
-        plantdata = await self.DBM.getSeedAndPlantData(self.cid)
-        self.plantdata = plantdata["plantdata"]
-        self.seeddata = plantdata["seeddata"]
+        _plantdata = await self.DBM.getSeedAndPlantData(self.cid)
+        self.plantdata = _plantdata["plantdata"]
+        self.seeddata = _plantdata["seeddata"]
+
+        _alldata = await self.DBM.getallplantdata(self.cid)
+        self.allplantdata = _alldata["data"]
 
         await self.Sendplantdata()
         await self.Sendseeddata()
 
+    # 保存数据
     async def SaveData(self):
         await self.DBM.Save_farmdata(self)
+        await self.DBM.save_allplantdata(self)
 
     # 发送土地植物数据
     async def Sendplantdata(self):
@@ -57,7 +62,52 @@ class Farm(object):
 
         await self.ToClientMsg(_msg)
 
-    # 发送一个土地数据
+# 声望相关记录
+#发送所有种植数据[种子种植次数以及声望]
+
+    async def sendallplantdata(self):
+        _msg = {"id": MsgDefine.USER_MSG_ALLPLANTDATA, "data": self.allplantdata}
+        await self.ToClientMsg(_msg)
+
+    # 所有种植数据增加种植次数
+    async def addplantnums(self, _seedid):
+        _arr = None
+        if str(_seedid) in self.allplantdata.keys():
+            _arr = self.allplantdata[str(_seedid)]
+        _newall = Seeddata()
+        if (_arr is None):
+            _newall.init_nw(_seedid)
+            _newall.add_plant()
+        else:
+            _newall.init_db(_arr)
+            _newall.add_plant()
+        _tmparr = _newall.Toarr()
+        self.allplantdata[str(_seedid)] = _tmparr
+
+    # 增加声望
+    async def addshengwangnums(self, _seedid):
+        _arr = None
+        if str(_seedid) in self.allplantdata.keys():
+            _arr = self.allplantdata[str(_seedid)]
+        _newall = Seeddata()
+        if (_arr is None):
+            _newall.init_nw(_seedid)
+            _newall.add_shengwang()
+        else:
+            _newall.init_db(_arr)
+            _newall.add_shengwang()
+        _tmparr = _newall.Toarr()
+        self.allplantdata[str(_seedid)] = _tmparr
+
+        _seeddata = ConfigData.seed_Data[_seedid]
+        _name = _seeddata["name_cn"]
+        _msg = {"id": 0, "data": "" + _name + "声望x" + str(5)}
+        await self.To_C_Tips(_msg)
+
+
+#
+# 发送一个土地数据
+
     async def SendOnePlant(self, index):
         _plantobj = self.plantobj[index]  # 获取对象
         self.plantdata[str(index)] = await _plantobj.Toarr()  # 转化数据
@@ -178,6 +228,9 @@ class Farm(object):
 
         # 记录log
         if (_state):
+            # 记录种植次数
+            await self.do_achieve_bytype(2, 1)  # 触发成就---种植
+            await self.addplantnums(seedid)
             await self.DBM.log_plant(self, plantindex, seedid, "log_farm_plant")
 
         # 做任务类型为2的任务【种植】
@@ -194,9 +247,11 @@ class Farm(object):
                     if (_state == True):  # 加钱加经验
                         _money = await _plantobj.GetStep_rewardCoins()
                         _exp = await _plantobj.getstep_rewardExps()
-
                         await self.add_gamemoney(_money)
                         await self.addexp(_exp)
+                        # 增加声望
+                        if _plantobj.step == 4:
+                            await self.addshengwangnums(_plantobj.seedid)
                 elif (_plantobj.waterstate == 1):
                     _state = await _plantobj.Water()
                 else:
@@ -249,6 +304,8 @@ class Farm(object):
                 await _plantobj.Harvest()
                 # 记录log
                 await self.DBM.log_plant(self, plantindex, _seedid, "log_farm_harvest")
+
+                await self.do_achieve_bytype(3, 1)  # 触发成就---植物召唤
 
         await self.SendOnePlant(plantindex)
 
@@ -431,6 +488,8 @@ class PlantData(object):
         _arr = eval(_seeddata["growTime"])
 
         # print(_seeddata)
+        if (self.step > 3):
+            return 0
         _data = _arr[self.step]
 
         return _data
@@ -472,3 +531,35 @@ class PlantData(object):
         self.otherstate4 = 0
 
         return True
+
+
+class Seeddata:
+    def __init__(self):
+        self.id = 0  # 种子ID
+        self.plantnums = 0  # 种植次数
+        self.shengwang = 0  # 声望
+
+    def init_db(self, _arr):
+        self.id = _arr[0]
+        self.plantnums = _arr[1]
+        self.shengwang = _arr[2]
+
+    def init_nw(self, _id):
+        self.id = _id
+        self.plantnums = 0
+        self.shengwang = 0
+
+    #种植次数加1
+    def add_plant(self):
+        self.plantnums += 1
+
+    #增加声望
+    def add_shengwang(self):
+        self.shengwang += 5
+
+    def Toarr(self):
+        _data = []
+        _data.append(self.id)
+        _data.append(self.plantnums)
+        _data.append(self.shengwang)
+        return _data

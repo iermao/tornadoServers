@@ -17,7 +17,7 @@ class DBHelper():
                            port=3306,
                            user='root',
                            passwd='root',
-                           db='gardendressup'),
+                           db='gardendressup',charset='utf8'),
                       max_idle_connections=1,
                       max_recycle_sec=3)
 

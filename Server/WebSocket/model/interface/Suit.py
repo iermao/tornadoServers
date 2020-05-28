@@ -14,6 +14,7 @@ from Server.WebSocket.model import ConfigData
 
 class Suit(object):
     def __init__(self):
+
         # 当前穿搭数据
         self.suitdata = []
         # 当前衣服物品数据
@@ -49,14 +50,15 @@ class Suit(object):
     # 增加衣服数据
     async def add_suit(self, dressid):
 
-        # 做任务
-
+        # 衣服已经拥有
         if (dressid in self.dressdata):
             _data = {"id": dressid, "sta": 1}
             self.soldsuit.append(dressid)
+        # 衣服没有
         else:
             self.dressdata.append(dressid)
             _data = {"id": dressid, "sta": 0}
+
         _msg = {"id": MsgDefine.USER_MSG_PLANT_HARVEST, "data": _data}
         await self.ToClientMsg(_msg)
         await self.Senddressdata()

@@ -43,6 +43,10 @@ class Task(object):
         _achievedata = await self.DBM.getachievedata(self.cid)
         self.achievedata = _achievedata["data"]
 
+        # 新的一天
+        if (self.newday):
+            self.taskdata = {}
+
         # 初始化任务数据
         await self.inittaskdata()
         # 初始化成就数据
@@ -82,7 +86,6 @@ class Task(object):
             _data = TaskData()
             # print(self.taskdata)
             if (str(key) in self.taskdata.keys()):
-                # print("inittaskdata", self.achievedata[str(key)])
                 await _data.init_db(self.taskdata[str(key)])
             else:
                 await _data.init_new(key)
@@ -100,6 +103,7 @@ class Task(object):
     async def achieveobjlisttodata(self):
         for _key in self.achieveobjlist.keys():
             self.achievedata[str(_key)] = await self.achieveobjlist[_key].To_arr()
+        # print("achievedata", self.achievedata)
 
     # 做任务----根据任务类型
     async def do_task_type(self, tasktype):
@@ -200,11 +204,45 @@ class Task(object):
             else:
                 await _data.init_new(key)
             _tmpdata = await _data.To_arr()
+            # print("initachievedata", _tmpdata)
             self.achievedata[str(_data.id)] = _tmpdata
             self.achieveobjlist[_data.id] = _data
 
+    # 根据成就类型做成就
+    async def do_achieve_bytype(self, _type, _data):
+        for _val in ConfigData.achive_Data.values():
+            if (_val["achievetype"] == _type):
+                await self.do_achieve(_type, _val["id"], _data)
 
-# 任务数据实体类
+    # 做成就
+    async def do_achieve(self, _type, _id, _data):
+        # print("do_achieve ", _id)
+        _state = False
+        if _id in self.achieveobjlist.keys():
+            _objval = self.achieveobjlist[_id]
+            _state = True
+            if (_type == 1):
+                await _objval.set_donums(_data)
+            else:
+                await _objval.add_donums()
+        if _state:
+            await self.achieveobjlisttodata()
+            await self.sendachievedata()
+
+    # 成就领取奖励
+    async def C_achieve_award(self, _id):
+        _state = False
+        if _id in self.achieveobjlist.keys():
+            _objval = self.achieveobjlist[_id]
+            _state = await _objval.set_rewardstate()
+
+        if (_state):
+            # 发送奖励...
+            await self.achieveobjlisttodata()
+            await self.sendachievedata()
+
+
+# 任务数据实体类**********************************************************************************************************
 class TaskData():
     def __init__(self):
         self.id = 0
@@ -280,6 +318,7 @@ class AchieveData():
             self.rewardJb = _data["rewardJb"]
             self.rewardGems = _data["rewardGems"]
             self.donums = 0
+            self.rewardstate = 0
 
     async def init_db(self, _arr):
         self.id = _arr[0]
@@ -287,8 +326,8 @@ class AchieveData():
         self.achievenumber = _arr[2]
         self.rewardJb = _arr[3]
         self.rewardGems = _arr[4]
-        self.donums = [5]
-        self.rewardstate = [6]
+        self.donums = _arr[5]
+        self.rewardstate = _arr[6]
 
     async def To_arr(self):
         _data = []
@@ -302,6 +341,17 @@ class AchieveData():
         return _data
 
     async def add_donums(self):
-        if (self.donums < self.id):
+        if (self.donums < self.achievenumber):
             self.donums += 1
         pass
+
+    async def set_donums(self, _val):
+        # if (self.donums <= self.achievenumber):
+        self.donums = _val
+
+    async def set_rewardstate(self):
+        if (self.rewardstate == 0):
+            self.rewardstate = 1
+            return True
+        else:
+            return False

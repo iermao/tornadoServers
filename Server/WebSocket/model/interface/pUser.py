@@ -32,6 +32,9 @@ class BaseUser(object):
         # 在线时间发送时间
         self.sendonline = time.time()
 
+    async def loopTimer(self):
+        await self.timersavedata()
+
     async def timersavedata(self):
         _times = time.time()
         # 每个用户自动存档时间5分钟
@@ -54,8 +57,10 @@ class BaseUser(object):
             self.sendonline = time.time()
             await self.SendBasedata_bykey("dayonline", self.basedata["dayonline"])
 
+    # 关闭连接
     async def close(self):
         self.logouttime = time.time() * 1000
+        self.pobj.close()
 
     #初始化部分数据
     async def initInsertData(self):
@@ -80,7 +85,7 @@ class BaseUser(object):
     async def SendBasedata_bykey(self, _key, _val):
         _data = {"key": _key, "val": _val}
         _msg = {"id": MsgDefine.USER_MSG_BASEDATA_KVAL, "mid": MsgDefine.BASEMSG, "data": _data}
-        print("SendBasedata_bykey", _msg)
+        # print("SendBasedata_bykey", _msg)
         await self.ToClientMsg(_msg)
 
     # 接受消息
@@ -125,6 +130,15 @@ class BaseUser(object):
         elif (_msgid == MsgDefine.USER_MSG_ONLINEREWARD):  # 在线领取
             await self.client_onlinereward(_msg["data"])
 
+        elif (_msgid == MsgDefine.USER_MSG_LUCKYSTART):  # 开始抽奖
+            await self.client_luckystart(_msg["data"])  #
+
+        elif (_msgid == MsgDefine.USER_MSG_LUCKYREWARD):  # 幸运抽奖
+            await self.client_luckyreward(_msg["data"])  #
+
+        elif (_msgid == MsgDefine.USER_MSG_ACHIEVEAWARD):  # 成就领取奖励
+            await self.client_achieveaward(_msg["data"])  #
+
         elif (_msgid == MsgDefine.USER_MSG_OPENSCENE):  # 开放场景
             await self.client_openscene(_msg["data"])
         elif (False):
@@ -133,6 +147,7 @@ class BaseUser(object):
             pass
 
     # 给客户端发送消息
+
     async def ToClientMsg(self, msg):
         # print(msg)
         _msg = json.dumps(msg)
@@ -155,7 +170,8 @@ class BaseUser(object):
 
     # 心跳数据
     async def client_Hertbeat(self):
-        # print("client_Hertbeat")
+        self.herttime = time.time()
+        # print("client_Hertbeat", self.herttime)
         await self.timersavedata()
 
     # 买种子
@@ -212,6 +228,23 @@ class BaseUser(object):
         _id = int(msg['id'])
         _itemid = int(msg['itemid'])
         await self.C_online_reward(_id, _itemid)
+
+    # 开始抽奖
+    async def client_luckystart(self, msg):
+        _type = int(msg['type'])
+        # print(_type)
+        await self.C_Lucky_start(_type)
+
+    # 幸运抽奖
+    async def client_luckyreward(self, msg):
+        _id = int(msg['id'])
+        _itemid = int(msg['itemid'])
+        await self.C_Lucky_reward(_id, _itemid)
+
+    # 成就领取
+    async def client_achieveaward(self, msg):
+        _id = int(msg['id'])
+        await self.C_achieve_award(_id)
 
     # 开放场景
     async def client_openscene(self, msg):

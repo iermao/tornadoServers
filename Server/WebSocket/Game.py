@@ -23,9 +23,11 @@ class game(object):
     def __init__(self):
         print("Game  __init__")
         # 所有连接进来的网络对象
-        self.nobjs = set()
+        self.nobjlist = set()
         # 创建的玩家字典
         self.playerList = dict()
+        # 需要删除的玩家列表
+        self.deletecidlist = []
         # 实例化数据库连接对象
         self.dbmanage = dbmanage()
         # 初始化配置数据
@@ -41,28 +43,41 @@ class game(object):
     async def loopTimer(self):
         _time = time.time()
         _mins = int((_time - self.starttime) / 60)  # 运行时间
-
         _nextpainttime = _time - self.printtime
         if (_nextpainttime > 10):
             self.printtime = time.time()
-            print("Server Start {0} mins, pid [{1}], nobjs [{2}], plist [{3}]".format(str(_mins), str(os.getpid()), str(len(self.nobjs)), str(len(self.playerList))))
+            print("Server Start {0} mins, pid [{1}], nobjlist [{2}], plist [{3}]".format(str(_mins), str(os.getpid()), str(len(self.nobjlist)), str(len(self.playerList))))
 
-        # if (_mins % 2 == 0 and _mins > 0):
-        #     print("Server Start {0} mins, pid [{1}]".format(str(_mins), str(os.getpid())))
-        #     pass
+        await self.CleanUser()
+
+    # 用户下线操作
+    async def CleanUser(self):
+        _time = time.time()
 
         for _pUser in self.playerList.values():
-            await _pUser.timersavedata()
+            await _pUser.loopTimer()
+            if (_pUser.herttime + 10) < _time:
+                self.deletecidlist.append(_pUser.cid)
+
+        for _cid in self.deletecidlist:
+            if (_cid not in self.playerList.keys()):
+                continue
+            _pUser = self.playerList[_cid]
+            if (_pUser is None):
+                continue
+            await _pUser.close()
+            await _pUser.SaveData_ALL()
+            await self.DelPlayerList(_pUser.pobj)
+            # 已经删除会报错异常，这里异常抛出
+            try:
+                self.nobjlist.remove(_pUser.pobj)
+            except:
+                pass
+                # self.nobjlist.remove(_pUser.pobj)
+
+        self.deletecidlist.clear()
 
     async def NewUser(self, nobj):
-        print("NewUser nobjs length", len(self.nobjs))
-        if nobj in self.nobjs:
-            print("在线！！")
-            puser = self.playerList[nobj.current_user.cid]
-            if (puser != None):
-                await puser.close()
-                await puser.SaveData_ALL()
-            return False, "on link"
 
         # 取得用户数据，根据socket第一次连接传递过来数据进行验证
 
@@ -91,13 +106,21 @@ class game(object):
             return False, " puid err" + str(puid)
 
         nobj.current_user.cid = puid
-        print("11111111111")
+        # print("11111111111")
 
-        print(nobj.current_user.cid)
+        checkobj = await self.GetPlayer(nobj)
+
+        if (checkobj != None):
+            # 用户没有下线
+            print("checkobj 1 ")
+            self.deletecidlist.append(puid)
+            await self.CleanUser()
+
+        print("NewUser nobjlist length---step 1  ", len(self.nobjlist))
 
         await self.PListInsert(nobj)
 
-        print("NewUser nobjs length1111", len(self.nobjs))
+        print("NewUser nobjlist length---step 2  ", len(self.nobjlist))
 
         _msg = {"id": MSG_STARTGAME}
         await self.ClientMsg(nobj, _msg)
@@ -115,7 +138,7 @@ class game(object):
             return self.playerList[nobj.current_user.cid]
 
         # 增加到socket连接用户列表
-        self.nobjs.add(nobj)
+        self.nobjlist.add(nobj)
         # 实例化一个玩家对象
         puser = Player()
         await puser.init(nobj, _cid, _pwd, self.dbmanage)
@@ -169,11 +192,18 @@ class game(object):
 
     async def close(self, nobj):
         # print("close")
-        if (nobj in self.nobjs):
+        if (nobj in self.nobjlist):
+            print("close 11  ")
             print(nobj.current_user.uid, " close")
             puser = self.playerList[nobj.current_user.cid]
             if (puser != None):
+                print("close 22  ")
                 await puser.close()
                 await puser.SaveData_ALL()
             await self.DelPlayerList(nobj)
-            self.nobjs.remove(nobj)
+            nobj.close()
+            # 已经删除会报错异常，这里异常抛出
+            try:
+                self.nobjlist.remove(nobj)
+            except:
+                pass
