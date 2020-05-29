@@ -44,6 +44,8 @@ class Farm(object):
         await self.Sendplantdata()
         await self.Sendseeddata()
 
+        await self.sendallplantdata()
+
     # 保存数据
     async def SaveData(self):
         await self.DBM.Save_farmdata(self)
@@ -84,6 +86,8 @@ class Farm(object):
         _tmparr = _newall.Toarr()
         self.allplantdata[str(_seedid)] = _tmparr
 
+        await self.sendallplantdata()
+
     # 增加声望
     async def addshengwangnums(self, _seedid):
         _arr = None
@@ -103,6 +107,8 @@ class Farm(object):
         _name = _seeddata["name_cn"]
         _msg = {"id": 0, "data": "" + _name + "声望x" + str(5)}
         await self.To_C_Tips(_msg)
+
+        await self.sendallplantdata()
 
 
 #

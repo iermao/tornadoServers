@@ -47,39 +47,59 @@ class dbmanage():
         _data = await self.dbhelper.Seldata(sql)
         # print(_data)
         if (_data == None):
-            sql = "insert into `player` ( `cid`,`createtime`,`logintime`,`logouttime`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`suitdata`,`dressdata`,`plantdata`,`seeddata`) values ({0},{1},{2},{3},'',1,1,1,2000,1000,'','','','');"
+            sql = "insert into `player` ( `cid`,`createtime`,`logintime`,`logouttime`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`) values ({0},{1},{2},{3},'',1,1,1,2000,1000,'','','','');"
             _time = time.time() * 1000
             sql = sql.format(cid, _time, _time, _time)
             await self.dbhelper.execute(sql)
 
-        # 初始化任务表
-        _tabletask = "player_taskdata"
+        # 初始衣服表
+        _table = "player_dressdata"
         sql = "select cid from `{0}` where `cid` = {1}"
-        sql = sql.format(_tabletask, cid)
+        sql = sql.format(_table, cid)
+        _data = await self.dbhelper.Seldata(sql)
+        if (_data == None):
+            sql = "insert into `{0}` ( `cid`,`suitdata`,`dressdata`) values ({1},'{2}','{3}');"
+            sql = sql.format(_table, cid, '', '')
+            await self.dbhelper.execute(sql)
+
+        # 初始农场表
+        _table = "player_farmdata"
+        sql = "select cid from `{0}` where `cid` = {1}"
+        sql = sql.format(_table, cid)
+        _data = await self.dbhelper.Seldata(sql)
+        if (_data == None):
+            sql = "insert into `{0}` ( `cid`,`plantdata`,`seeddata`) values ({1},'{2}','{3}');"
+            sql = sql.format(_table, cid, '', '')
+            await self.dbhelper.execute(sql)
+
+        # 初始化任务表
+        _table = "player_taskdata"
+        sql = "select cid from `{0}` where `cid` = {1}"
+        sql = sql.format(_table, cid)
         _data = await self.dbhelper.Seldata(sql)
         if (_data == None):
             sql = "insert into `{0}` ( `cid`,`data`,`dayonlinerew`) values ({1},'{2}','{3}');"
-            sql = sql.format(_tabletask, cid, '', '')
+            sql = sql.format(_table, cid, '', '')
             await self.dbhelper.execute(sql)
 
         # 初始化成就表
-        _tabletask = "player_achievedata"
+        _table = "player_achievedata"
         sql = "select cid from `{0}` where `cid` = {1}"
-        sql = sql.format(_tabletask, cid)
+        sql = sql.format(_table, cid)
         _data = await self.dbhelper.Seldata(sql)
         if (_data == None):
             sql = "insert into `{0}` ( `cid`,`data`) values ({1},'{2}');"
-            sql = sql.format(_tabletask, cid, '')
+            sql = sql.format(_table, cid, '')
             await self.dbhelper.execute(sql)
 
         # 初始化所有种植植物数据表
-        _tabletask = "player_plantdata"
+        _table = "player_plantdata"
         sql = "select cid from `{0}` where `cid` = {1}"
-        sql = sql.format(_tabletask, cid)
+        sql = sql.format(_table, cid)
         _data = await self.dbhelper.Seldata(sql)
         if (_data == None):
             sql = "insert into `{0}` ( `cid`,`data`) values ({1},'{2}');"
-            sql = sql.format(_tabletask, cid, '')
+            sql = sql.format(_table, cid, '')
             await self.dbhelper.execute(sql)
 
     #获得玩家基础数据
@@ -105,22 +125,33 @@ class dbmanage():
 
     # 获得玩家换装以及获得的装备
     async def getHomeData(self, cid):
-        sql = "select `cid`,`suitdata`,`dressdata` from `player` where cid = {0}"
+        sql = "select `cid`,`suitdata`,`dressdata` ,`suitlist` from `player_dressdata` where cid = {0}"
         sql = sql.format(cid)
         _data = await self.dbhelper.Seldata(sql)
         _list = {}
         if (_data != None):
             _list["cid"] = _data[0]
 
+            # 当前穿戴数据
             _list["suitdata"] = self.initSuitData(_data[1])
-
+            # 拥有衣服数据
             _list["dressdata"] = self.initDressData(_data[2])
+
+            # 获取在线数据
+            if (_data[3] != "" and _data[3] != None):
+                _tmpdata = eval(_data[3])
+                if (len(_tmpdata) < 1):
+                    _list["suitlist"] = {}
+                else:
+                    _list["suitlist"] = _tmpdata
+            else:
+                _list["suitlist"] = {}
 
         return _list
 
     # 获得 农场种植数据以及种子数据
     async def getSeedAndPlantData(self, cid):
-        sql = "select `cid`,`plantdata`,`seeddata` from `player` where cid = {0}"
+        sql = "select `cid`,`plantdata`,`seeddata` from `player_farmdata` where cid = {0}"
         sql = sql.format(cid)
         _data = await self.dbhelper.Seldata(sql)
         _list = {}
@@ -214,7 +245,7 @@ class dbmanage():
     # 初始化---当前衣服物品数据
     def initDressData(self, _data):
         if (str(_data).replace(' ', '') == ""):
-            return [10101]
+            return []
         else:
             return eval(_data)
 
@@ -261,17 +292,18 @@ class dbmanage():
 
     # 保存衣服以及当前穿戴数据
     async def Save_homedata(self, _puser):
-        sql = "UPDATE `player` set `suitdata` = '{0}',  `dressdata` = '{1}' where cid = {2} ;"
+        sql = "UPDATE `player_dressdata` set `suitdata` = '{0}',  `dressdata` = '{1}',  `suitlist` = '{3}' where cid = {2} ;"
 
         _suitdata = str(_puser.suitdata)
         _dressdata = str(_puser.dressdata)
+        _suitlistdata = json.dumps(_puser.suitlist)
 
-        sql = sql.format(_suitdata, _dressdata, _puser.cid)
+        sql = sql.format(_suitdata, _dressdata, _puser.cid, _suitlistdata)
         await self.dbhelper.execute(sql)
 
     # 保存农场以及种子数据
     async def Save_farmdata(self, _puser):
-        sql = "UPDATE `player` set `plantdata` = '{0}',  `seeddata` = '{1}' where cid = {2} ;"
+        sql = "UPDATE `player_farmdata` set `plantdata` = '{0}',  `seeddata` = '{1}' where cid = {2} ;"
 
         _plantdata = json.dumps(_puser.plantdata)
         _seeddata = json.dumps(_puser.seeddata)

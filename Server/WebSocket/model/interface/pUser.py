@@ -113,7 +113,7 @@ class BaseUser(object):
         elif (_msgid == MsgDefine.USER_MSG_PLANT_CHECK):  # 植物状态检测
             await self.client_plantcheckstate(_msg["data"])
 
-        elif (_msgid == MsgDefine.USER_MSG_CHANGESUIT):  # 植物状态检测
+        elif (_msgid == MsgDefine.USER_MSG_CHANGESUIT):  # 换装备
             await self.client_changesuit(_msg["data"])
 
         elif (_msgid == MsgDefine.USER_MSG_PLANT_NEW):  # 开垦一个新的土地
@@ -126,6 +126,9 @@ class BaseUser(object):
 
         elif (_msgid == MsgDefine.USER_MSG_TASKREWARD):  # 任务领取
             await self.client_taskreward(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_DOTASK):  # 做任务
+            await self.client_dotask(_msg["data"])
 
         elif (_msgid == MsgDefine.USER_MSG_ONLINEREWARD):  # 在线领取
             await self.client_onlinereward(_msg["data"])
@@ -222,6 +225,13 @@ class BaseUser(object):
     async def client_taskreward(self, msg):
         _id = int(msg['id'])
         await self.C_task_reward(_id)
+
+    # 做任务
+    async def client_dotask(self, msg):
+        _id = int(msg['id'])
+        if (_id in [1011, 1010]):
+            await self.do_task_id(_id)
+            await self.checklasttask()
 
     # 在线领取奖励
     async def client_onlinereward(self, msg):

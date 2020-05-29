@@ -110,16 +110,38 @@ class Task(object):
         for _val in self.taskobjlist.values():
             if _val.type == tasktype:
                 await self.do_task_id(_val.id)
+                await self.checklasttask()
 
     # 做任务----根据任务id
     async def do_task_id(self, _taskid):
         _taskpbj = self.taskobjlist[_taskid]
         if (_taskpbj != None):
-            _state = await _taskpbj.add_donums()
-            await self.taskobjlisttodata()
-            # 成功做任务了发送任务数据
+            _state = await _taskpbj.checkok()
             if (_state):
-                await self.sendtaskdata()
+                return False
+            _state = await _taskpbj.add_donums()
+            # await self.taskobjlisttodata()
+            # # 成功做任务了发送任务数据
+            # if (_state):
+            #     await self.sendtaskdata()
+
+    # 检测所有任务做完状态
+    async def checklasttask(self):
+        _dook = 0
+        _val = self.taskobjlist[1012]
+        if _val is None:
+            return False
+        _state = await _val.checkok()
+        if (_state):
+            return False
+        for _val in self.taskobjlist.values():
+            _state = await _val.checkok()
+            if (_val.id != 1012 and _state):
+                _dook = _dook + 1
+        _val.donums = _dook
+
+        await self.taskobjlisttodata()
+        await self.sendtaskdata()
 
     # 任务领取奖励
     async def C_task_reward(self, _taskid):
@@ -139,15 +161,18 @@ class Task(object):
 
     #在线领取奖励
     async def C_online_reward(self, _onlineid, _itemid):
+        print("C_online_reward")
         if (_onlineid not in self.dayonlinerew):
             _con_data = ConfigData.onLine_Data[_onlineid]
             if (_con_data != None):
                 _rewardType = _con_data['rewardType']
                 _rewardPra = eval(_con_data['rewardPra'])
                 _time = _con_data['time']
-                if (_time < self.basedata["dayonline"]):
+                print("_time  ", _time, self.basedata["dayonline"])
+                # 判断时间是否到了
+                if (_time > self.basedata["dayonline"] * 60):
                     return False
-                # pass
+                print("_rewardType  ", _rewardType)
                 if (_rewardType == 1):  # 奖励金币
                     _count = _rewardPra[0]
                     await self.add_gamemoney(_count)
@@ -166,7 +191,7 @@ class Task(object):
                     _suitid = _itemid
                     await self.add_suit(_suitid)  # 增加衣服
                     await self.sold_moresuit()  # 出售多余的衣服
-
+                print("C_online_reward end")
                 self.dayonlinerew.append(_onlineid)
                 await self.sendonlinerewdata()
 
@@ -238,6 +263,11 @@ class Task(object):
 
         if (_state):
             # 发送奖励...
+            _tmpacdata = ConfigData.achive_Data[_id]
+            rewardJb = _tmpacdata["rewardJb"]
+            rewardGems = _tmpacdata["rewardGems"]
+            await self.add_gamemoney(rewardJb)  # 增加游戏币
+            await self.add_paymoney(rewardGems)  # 增加钻石
             await self.achieveobjlisttodata()
             await self.sendachievedata()
 
@@ -283,6 +313,12 @@ class TaskData():
         _data.append(self.donums)
         _data.append(self.rewardstate)
         return _data
+
+    async def checkok(self):
+        if (self.donums >= self.num):
+            return True
+        else:
+            return False
 
     async def add_donums(self):
         if (self.donums < self.num):
@@ -339,6 +375,10 @@ class AchieveData():
         _data.append(self.donums)
         _data.append(self.rewardstate)
         return _data
+
+    async def checkok(self):
+        if (self.donums >= self.achievenumber):
+            return True
 
     async def add_donums(self):
         if (self.donums < self.achievenumber):

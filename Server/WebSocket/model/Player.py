@@ -109,7 +109,8 @@ class Player(BaseUser, Suit, Farm, Task):
         _msg = {"id": 0, "data": "获得经验x" + str(_exp)}
         await self.To_C_Tips(_msg)
 
-        await self.Sendbasedata()
+        # await self.Sendbasedata()
+        await self.SendBasedata_bykey("exp", self.basedata["exp"])
         return True
 
     # 升级
@@ -120,6 +121,7 @@ class Player(BaseUser, Suit, Farm, Task):
 
         self.basedata["level"] += _addlevel
         self.basedata["exp"] = 0
+        await self.SendBasedata_bykey("level", self.basedata["level"])
 
         await self.do_achieve_bytype(1, self.basedata["level"])  # # 触发成就---升级
 
@@ -137,7 +139,8 @@ class Player(BaseUser, Suit, Farm, Task):
         self.basedata["gamemoney"] += _value
         _msg = {"id": 0, "data": "获得金币x" + str(_value)}
         await self.To_C_Tips(_msg)
-        await self.Sendbasedata()
+        # await self.Sendbasedata()
+        await self.SendBasedata_bykey("gamemoney", self.basedata["gamemoney"])
         return True
 
     # 减少货币
@@ -149,8 +152,8 @@ class Player(BaseUser, Suit, Farm, Task):
         if (_nowmoney < _value):
             return False
         self.basedata["gamemoney"] -= _value
-
-        await self.Sendbasedata()
+        # await self.Sendbasedata()
+        await self.SendBasedata_bykey("gamemoney", self.basedata["gamemoney"])
         return True
 
     # 获取钻石
@@ -165,7 +168,8 @@ class Player(BaseUser, Suit, Farm, Task):
         self.basedata["paymoney"] += _value
         _msg = {"id": 0, "data": "获得钻石x" + str(_value)}
         await self.To_C_Tips(_msg)
-        await self.Sendbasedata()
+        # await self.Sendbasedata()
+        await self.SendBasedata_bykey("paymoney", self.basedata["paymoney"])
         return True
 
     # 钻石减少
@@ -177,7 +181,8 @@ class Player(BaseUser, Suit, Farm, Task):
         if (_nowval < _value):
             return False
         self.basedata["paymoney"] -= _value
-        await self.Sendbasedata()
+        # await self.Sendbasedata()
+        await self.SendBasedata_bykey("paymoney", self.basedata["paymoney"])
         return True
 
     # 幸运抽奖开始
@@ -193,6 +198,10 @@ class Player(BaseUser, Suit, Farm, Task):
         if (_con_data != None):
             _rewardType = _con_data['rewardType']
             _rewardPra = eval(_con_data['rewardPra'])
+
+            # 做任务类型为3的任务【摇奖】
+            await self.do_task_type(4)
+
             if (_rewardType == 1):  # 奖励金币
                 _count = _rewardPra[0]
                 await self.add_gamemoney(_count)
