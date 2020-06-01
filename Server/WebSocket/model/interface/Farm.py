@@ -89,23 +89,23 @@ class Farm(object):
         await self.sendallplantdata()
 
     # 增加声望
-    async def addshengwangnums(self, _seedid):
+    async def addshengwangnums(self, _seedid, _counts):
         _arr = None
         if str(_seedid) in self.allplantdata.keys():
             _arr = self.allplantdata[str(_seedid)]
         _newall = Seeddata()
         if (_arr is None):
             _newall.init_nw(_seedid)
-            _newall.add_shengwang()
+            _newall.add_shengwang(_counts)
         else:
             _newall.init_db(_arr)
-            _newall.add_shengwang()
+            _newall.add_shengwang(_counts)
         _tmparr = _newall.Toarr()
         self.allplantdata[str(_seedid)] = _tmparr
 
         _seeddata = ConfigData.seed_Data[_seedid]
         _name = _seeddata["name_cn"]
-        _msg = {"id": 0, "data": "" + _name + "声望x" + str(5)}
+        _msg = {"id": 0, "data": "" + _name + "声望x" + str(_counts)}
         await self.To_C_Tips(_msg)
 
         await self.sendallplantdata()
@@ -257,7 +257,7 @@ class Farm(object):
                         await self.addexp(_exp)
                         # 增加声望
                         if _plantobj.step == 4:
-                            await self.addshengwangnums(_plantobj.seedid)
+                            await self.addshengwangnums(_plantobj.seedid, 5)
                 elif (_plantobj.waterstate == 1):
                     _state = await _plantobj.Water()
                 else:
@@ -294,8 +294,12 @@ class Farm(object):
                     if (_state == False):
                         await self.SendToClientTips(101002)
                         return False
-                    _random = random.randint(0, len(dresslist) - 1)
-                    _index = dresslist[_random]
+                    _giverandom = random.randint(0, 100)
+                    if (_giverandom <= 50):
+                        _random = random.randint(0, len(dresslist) - 1)
+                        _index = dresslist[_random]
+                    else:
+                        _index = -1
                 # 消耗钻石收获
                 if (_type == 2):
                     _money = seeddata["callGems"]
@@ -560,8 +564,8 @@ class Seeddata:
         self.plantnums += 1
 
     #增加声望
-    def add_shengwang(self):
-        self.shengwang += 5
+    def add_shengwang(self, _val):
+        self.shengwang += _val
 
     def Toarr(self):
         _data = []

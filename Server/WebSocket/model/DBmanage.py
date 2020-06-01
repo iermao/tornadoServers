@@ -102,6 +102,16 @@ class dbmanage():
             sql = sql.format(_table, cid, '')
             await self.dbhelper.execute(sql)
 
+        # 初始化保存的套装数据
+        _table = "player_savesuitdata"
+        sql = "select cid from `{0}` where `cid` = {1}"
+        sql = sql.format(_table, cid)
+        _data = await self.dbhelper.Seldata(sql)
+        if (_data == None):
+            sql = "insert into `{0}` ( `cid`,`data`) values ({1},'{2}');"
+            sql = sql.format(_table, cid, '')
+            await self.dbhelper.execute(sql)
+
     #获得玩家基础数据
     async def getBaseData(self, cid):
         sql = "select `cid`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`allonline`,`dayonline`,`logintime`,`logouttime`,`lucktime` from `player` where cid = {0}"
@@ -225,6 +235,20 @@ class dbmanage():
                 _list["data"] = {}
         return _list
 
+    # 获得玩家保存的套装数据
+    async def getsavesuitdata(self, cid):
+        sql = "select `cid`,`data` from `player_savesuitdata` where cid = {0}"
+        sql = sql.format(cid)
+        _data = await self.dbhelper.Seldata(sql)
+        _list = {}
+        if (_data != None):
+            _list["cid"] = _data[0]
+            if (_data[1] != ""):
+                _list["data"] = eval(_data[1])
+            else:
+                _list["data"] = {}
+        return _list
+
     # ************************************************************************
     # 读取数据---from  mysql
     # 结束
@@ -334,6 +358,14 @@ class dbmanage():
     async def save_allplantdata(self, _puser):
         sql = "UPDATE `player_plantdata` set `data` = '{0}' where cid = {1} ;"
         _data = json.dumps(_puser.allplantdata)
+        sql = sql.format(_data, _puser.cid)
+        await self.dbhelper.execute(sql)
+        pass
+
+    # 保存保存的套装数据
+    async def Save_savesuitdata(self, _puser):
+        sql = "UPDATE `player_savesuitdata` set `data` = '{0}' where cid = {1} ;"
+        _data = json.dumps(_puser.savesuit)
         sql = sql.format(_data, _puser.cid)
         await self.dbhelper.execute(sql)
         pass

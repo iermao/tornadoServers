@@ -33,6 +33,7 @@ class BaseUser(object):
         self.sendonline = time.time()
 
     async def loopTimer(self):
+        await self.checkthememodel()
         await self.timersavedata()
 
     async def timersavedata(self):
@@ -144,6 +145,13 @@ class BaseUser(object):
 
         elif (_msgid == MsgDefine.USER_MSG_OPENSCENE):  # 开放场景
             await self.client_openscene(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_SAVESUIT):  # 保存套装数据
+            await self.client_savesuit(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_THEMEMODELREWARD):  # 保存套装数据
+            await self.client_thememodere(_msg["data"])
+
         elif (False):
             pass
         else:
@@ -260,3 +268,12 @@ class BaseUser(object):
     async def client_openscene(self, msg):
         _id = int(msg['id'])
         await self.C_openscene(_id)
+
+    # 保存时装
+    async def client_savesuit(self, msg):
+        await self.C_savesuit()
+
+    async def client_thememodere(self, msg):
+        _val = int(msg['val'])
+        await self.C_thememodel_re(_val)
+        pass
