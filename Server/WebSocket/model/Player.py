@@ -7,6 +7,7 @@
 import os
 import json
 import time
+import random
 
 from Server.WebSocket.model import Fun
 
@@ -24,10 +25,14 @@ from . import MsgDefine
 class Player(BaseUser, Suit, Farm, Task):
     def __init__(self):
         self.herttime = time.time()
-        # 玩家数据
 
+        # 玩家基础数据
         self.basedata = {}
+        # 是否是新的一天
         self.newday = False
+        # 签到数据
+        self.signdata = {}
+
         BaseUser.__init__(self)
         Suit.__init__(self)
         Farm.__init__(self)
@@ -56,6 +61,10 @@ class Player(BaseUser, Suit, Farm, Task):
         # 基础数据
         self.basedata = await self.DBM.getBaseData(self.cid)
 
+        # 签到数据
+        _signdata = await self.DBM.getsigndata(self.cid)
+        self.signdata = _signdata["signdata"]
+
         # 获取上次登录时间
         _lastlogintime = self.basedata["logintime"] / 1000
         _nowlogintime = time.time()
@@ -66,12 +75,18 @@ class Player(BaseUser, Suit, Farm, Task):
 
         await self.Sendbasedata()
 
-    # 新的一滩需要重置的数据
+        # 检测签到数据
+        await self.checkSign()
+
+    # 新的一天需要重置的数据
     async def NewDay(self):
-        self.newday = True
+        # 重置在线数据
         self.basedata["dayonline"] = 0
+        # 发送基础数据
         await self.Sendbasedata()
+        # 重置在线奖励数据
         self.dayonlinerew = []
+        # 发送在线奖励数据
         await self.sendonlinerewdata()
 
     # 登录初始化发送数据---begin
@@ -90,6 +105,95 @@ class Player(BaseUser, Suit, Farm, Task):
         # 最后在保存玩家数据
         await BaseUser.SaveData(self)
 
+    # 发送签到数据
+    async def sendSignData(self):
+        _msg = {"id": MsgDefine.USER_MSG_SIGN, "data": self.signdata}
+        await self.ToClientMsg(_msg)
+
+    # 签到数据
+    async def checkSign(self):
+        if (len(self.signdata) == 0):
+            self.signdata["nums"] = 0
+            self.signdata["times"] = 0
+            # 发送签到数据
+            await self.sendSignData()
+            return True
+        else:
+            times = self.signdata["times"]
+            nums = self.signdata["nums"]
+            if (times == 0):
+                await self.sendSignData()
+                return True
+            _days = Fun.get_delta_days(times, time.time())
+            print("_days", _days, self.signdata)
+            if (_days > 1 or nums > 6):
+                self.signdata["nums"] = 0
+                self.signdata["times"] = 0
+                await self.sendSignData()
+                return True
+            elif _days == 1 and nums < 7:
+                await self.sendSignData()
+                return True
+
+    # 客户端签到
+    async def C_Sign(self):
+
+        times = self.signdata["times"]
+        _state = False
+        if times == 0:
+            self.signdata["times"] = time.time()
+            self.signdata["nums"] = self.signdata["nums"] + 1
+            _state = True
+        elif times > 0:
+            _days = Fun.get_delta_days(times, time.time())
+            if _days == 1:
+                self.signdata["times"] = time.time()
+                self.signdata["nums"] = self.signdata["nums"] + 1
+                _state = True
+            pass
+        if _state:
+            nums = self.signdata["nums"]
+            print("C_Sign", nums)
+            await self.signgift(nums)
+
+    # 签到奖励
+    async def signgift(self, _index):
+        _data = ConfigData.sign_Data[_index]
+        if (_data is None):
+            return False
+        rewardType = _data["rewardType"]
+        rewardPra = eval(_data["rewardPra"])
+
+        _itemid = 0
+        _count = 1
+        if (rewardType == 1):  # 奖励金币
+            _count = rewardPra[0]
+            await self.add_gamemoney(_count)
+        elif (rewardType == 2):  # 奖励钻石
+            _count = rewardPra[0]
+            await self.add_paymoney(_count)
+        elif (rewardType == 5):  # 奖励种子
+            _random = random.randint(0, 1)
+            _itemid = rewardPra[_random]
+            if (_itemid not in rewardPra):
+                return False
+            _seedid = _itemid
+            _count = rewardPra[2]
+            await self.Add_seed(_seedid, _count)  # 增加种子
+        elif (rewardType == 7):  # 奖励衣服
+            _random = random.randint(0, 1)
+            _itemid = rewardPra[_random]
+            if (_itemid not in rewardPra):
+                return False
+            _suitid = _itemid
+            _count = rewardPra[2]
+            await self.add_suit(_suitid)  # 增加衣服
+            await self.sold_moresuit()  # 出售多余的衣服
+
+        # 物品提示数据
+        await self.showitemtips(rewardType, _itemid, _count, 1)
+
+    # 增加经验数据
     async def addexp(self, _exp):
         _exp = int(_exp)
         if (_exp <= 0):
@@ -193,7 +297,7 @@ class Player(BaseUser, Suit, Farm, Task):
         return True
 
     # 幸运抽奖奖励
-    async def C_Lucky_reward(self, _luckyid, _itemid):
+    async def C_Lucky_reward(self, _luckyid):
         _con_data = ConfigData.lucky_Data[_luckyid]
         if (_con_data != None):
             _rewardType = _con_data['rewardType']
@@ -205,12 +309,74 @@ class Player(BaseUser, Suit, Farm, Task):
             if (_rewardType == 1):  # 奖励金币
                 _count = _rewardPra[0]
                 await self.add_gamemoney(_count)
+                await self.showitemtips(_rewardType, 0, _count, 1)
             elif (_rewardType == 2):  # 奖励钻石
                 _count = _rewardPra[0]
                 await self.add_paymoney(_count)
+                await self.showitemtips(_rewardType, 0, _count, 1)
             elif (_rewardType == 5):  # 奖励种子
+                _random = random.randint(0, 1)
+                _itemid = _rewardPra[_random]
                 if (_itemid not in _rewardPra):
                     return False
                 _seedid = _itemid
                 _count = _rewardPra[2]
                 await self.Add_seed(_seedid, _count)  # 增加种子
+                await self.showitemtips(_rewardType, _itemid, _count, 1)
+
+    # 客户端显示获得物品提示
+    async def showitemtips(self, _type, _itemid, _count, _showstate):
+        _data = [_type, _itemid, _count, _showstate]
+        _msg = {"id": MsgDefine.GAME_MSG_GETITEMTIP, "data": _data}
+        await self.ToClientMsg(_msg)
+
+    # 商店购买
+    # _type =1 礼包商店
+    # _type =3 钻石商店
+    # _type =4 金币商店
+
+    async def C_shopbuy(self, _type, _index):
+        print("C_shopbuy", _type, _index)
+        if _type == 1:  # 礼包商店
+            await self.shopby_gift(_index)
+
+        elif _type == 3:  # 钻石商店
+            if _index < 0 or _index > 4:  # 索引错误
+                return False
+            _val = ConfigData.shoplist3_con[_index]
+            if len(_val) != 2:
+                return False
+            _coust = _val[0]
+            _give = _val[1]
+            # 增加钻石
+            await self.add_paymoney(_give)
+
+        elif _type == 4:  # 金币商店
+            if _index < 0 or _index > 4:  # 索引错误
+                return False
+            _val = ConfigData.shoplist4_con[_index]
+            if len(_val) != 2:
+                return False
+            _coust = _val[0]
+            _give = _val[1]
+
+            # 扣除钻石
+            await self.rec_paymoney(_coust)
+            # 增加金币
+            await self.add_gamemoney(_give)
+
+    # 礼包商城
+    async def shopby_gift(self, _index):
+        pass
+
+    # 免费商店领取种子
+    async def c_freeshop(self, _index):
+        _val = ConfigData.free_shop[_index]
+        if (_val == None or len(_val) < 3):
+            return False
+
+        _itemid = _val[0]
+        _seedid = _itemid
+        _count = _val[1]
+        await self.Add_seed(_seedid, _count)  # 增加种子
+        await self.showitemtips(5, _seedid, _count, 1)

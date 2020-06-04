@@ -47,7 +47,7 @@ class dbmanage():
         _data = await self.dbhelper.Seldata(sql)
         # print(_data)
         if (_data == None):
-            sql = "insert into `player` ( `cid`,`createtime`,`logintime`,`logouttime`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`) values ({0},{1},{2},{3},'',1,1,1,2000,1000,'','','','');"
+            sql = "insert into `player` ( `cid`,`createtime`,`logintime`,`logouttime`,`nick`,`sex`,`level`,`exp`,`gamemoney`,`paymoney`,`signdata`) values ({0},{1},{2},{3},'',1,1,1,2000,1000,'');"
             _time = time.time() * 1000
             sql = sql.format(cid, _time, _time, _time)
             await self.dbhelper.execute(sql)
@@ -131,6 +131,25 @@ class dbmanage():
             _list["logintime"] = _data[9]
             _list["logouttime"] = _data[10]
             _list["lucktime"] = _data[11]
+        return _list
+
+    # 获取签到数据
+    async def getsigndata(self, cid):
+        sql = "select `cid`,`signdata` from `player` where cid = {0}"
+        sql = sql.format(cid)
+        _data = await self.dbhelper.Seldata(sql)
+        _list = {}
+        if (_data != None):
+            _list["cid"] = _data[0]
+            if (_data[1] != "" and _data[1] != None):
+                _tmpdata = eval(_data[1])
+                if (len(_tmpdata) < 1):
+                    _list["signdata"] = {}
+                else:
+                    _list["signdata"] = _tmpdata
+            else:
+                _list["signdata"] = {}
+
         return _list
 
     # 获得玩家换装以及获得的装备
@@ -246,7 +265,7 @@ class dbmanage():
             if (_data[1] != ""):
                 _list["data"] = eval(_data[1])
             else:
-                _list["data"] = {}
+                _list["data"] = []
         return _list
 
     # ************************************************************************
@@ -312,6 +331,13 @@ class dbmanage():
         sql = sql.format(_puser.logintime, _puser.logouttime, _puser.basedata["level"], _puser.basedata["exp"], _puser.basedata["gamemoney"], _puser.basedata["paymoney"], _puser.cid, _puser.basedata["allonline"], _puser.basedata["dayonline"], _puser.basedata["lucktime"])
 
         # print(sql)
+        await self.dbhelper.execute(sql)
+
+    # 保存签到数据
+    async def Save_signdata(self, _puser):
+        sql = "UPDATE `player` set `signdata` = '{0}'  where cid = {1} ;"
+        _signdata = json.dumps(_puser.signdata)
+        sql = sql.format(_signdata, _puser.cid)
         await self.dbhelper.execute(sql)
 
     # 保存衣服以及当前穿戴数据

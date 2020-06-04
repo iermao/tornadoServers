@@ -17,8 +17,13 @@ USER_MSG_ALLPLANTDATA = 20008
 # 发送单个用户数据
 
 # ***** 需要单独发送的数据可以使用这个消息ID然后在加上其他定义的单个数据id来发送数据***
-
 USER_MSG_BASEDATA_KVAL = 20006
+
+# 签到数据
+USER_MSG_SIGN = 20007
+
+# 免费商店
+USER_MSG_FREESHOP = 2008
 
 # 发送单个用户数据 ----玩家基础数据
 BASEMSG = 1001
@@ -45,6 +50,9 @@ USER_MSG_PLANT_HARVEST = 22005
 # 出售衣服
 USER_MSG_PLANT_SOLDSUIT = 22006
 
+# 种子变异数据
+USER_MSG_SEEDVARIATE = 22007
+
 #  换装备
 USER_MSG_CHANGESUIT = 23000
 
@@ -54,8 +62,12 @@ USER_MSG_SUITLIST = 23001
 # 保存的套装数据数据
 USER_MSG_SAVESUITDATA = 23002
 
-# 保存的套装数据
+# 保存套装数据
 USER_MSG_SAVESUIT = 23003
+
+
+    # // # 保存的套装数据操作
+USER_MSG_SAVESUITACTION = 23004
 
 # 发送任务数据
 USER_MSG_INITTASKDATA=24000
@@ -89,6 +101,22 @@ USER_MSG_LUCKYSTART = 26005
 # 主题模特领取奖励
 USER_MSG_THEMEMODELREWARD = 26006
 
+
+
+    # //商店购买
+USER_SHOPBUY = 27001
+    # //购买礼包
+USER_SHOPBUY_GIFT = 1001
+    # //购买钻石
+USER_SHOPBUY_PAYMONEY = 1003
+    # //购买金币
+USER_SHOPBUY_GAMEMONEY = 1004
+
 # 发送统一消息数据
 GAME_MSG_TIPSMSG = 90000
+
+# 获得物品提示数据
+GAME_MSG_GETITEMTIP = 90001
+
+
 

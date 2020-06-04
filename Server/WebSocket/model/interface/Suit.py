@@ -7,6 +7,7 @@
 import json
 import time
 import datetime
+import copy
 
 from Server.WebSocket.model import MsgDefine
 
@@ -32,7 +33,7 @@ class Suit(object):
         # 套装数据
         self.suitlist = {}
         # 保存的套装数据
-        self.savesuit = {}
+        self.savesuit = []
 
         pass
 
@@ -85,7 +86,9 @@ class Suit(object):
     async def C_savesuit(self):
         _leng = len(self.savesuit)
         _ishas = False
-        for _val in self.savesuit.values():
+        # print(self.savesuit)
+        # print(self.suitdata)
+        for _val in self.savesuit:
             if (self.suitdata == _val):
                 _ishas = True
                 break
@@ -95,8 +98,29 @@ class Suit(object):
         if (_leng > 4):
             await self.SendToClientTips(101055)  #保存的穿搭数据已满
             return False
-        self.savesuit[str(_leng + 1)] = self.suitdata
+        _copylist = copy.deepcopy(self.suitdata)
+        self.savesuit.append(_copylist)
+        _msg = {"id": 0, "data": "穿搭保存成功！"}
+        await self.To_C_Tips(_msg)  #保存的穿搭数据已满
         await self.Sendsavesuit()
+
+    # 保存时装数据操作
+    async def C_savesuitaction(self, _id, _type):
+        # print("C_savesuitaction", _id, _type)
+        # 删除
+        if (_type == 1):
+            _val = self.savesuit[_id]
+            if (len(_val) > 0):
+                self.savesuit.remove(_val)
+                await self.Sendsavesuit()
+            else:
+                return False
+        # 装备
+        if (_type == 2):
+            _val = self.savesuit[_id]
+            if (len(_val) > 0):
+                self.suitdata = _val
+                await self.Sendsuitdata()
 
     # 增加衣服数据
     async def add_suit(self, dressid):
@@ -173,7 +197,7 @@ class Suit(object):
                 _themelist.append(int(_tmplist[1]))
                 pass
             pass
-        print("_themelist", _themelist)
+        # print("_themelist", _themelist)
         self.suitmodel = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for _val in _themelist:
             self.suitmodel[_val] = self.suitmodel[_val] + 1

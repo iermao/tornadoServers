@@ -7,6 +7,7 @@
 
 import json
 import time
+import random
 
 from Server.WebSocket.model import MsgDefine
 
@@ -160,7 +161,7 @@ class Task(object):
                 await self.sendtaskdata()
 
     #在线领取奖励
-    async def C_online_reward(self, _onlineid, _itemid):
+    async def C_online_reward(self, _onlineid):
         print("C_online_reward")
         if (_onlineid not in self.dayonlinerew):
             _con_data = ConfigData.onLine_Data[_onlineid]
@@ -172,7 +173,9 @@ class Task(object):
                 # 判断时间是否到了
                 if (_time > self.basedata["dayonline"] * 60):
                     return False
-                print("_rewardType  ", _rewardType)
+                # print("_rewardType  ", _rewardType)
+                _itemid = 0
+                _count = 1
                 if (_rewardType == 1):  # 奖励金币
                     _count = _rewardPra[0]
                     await self.add_gamemoney(_count)
@@ -180,20 +183,28 @@ class Task(object):
                     _count = _rewardPra[0]
                     await self.add_paymoney(_count)
                 elif (_rewardType == 5):  # 奖励种子
+                    _random = random.randint(0, 1)
+                    _itemid = _rewardPra[_random]
                     if (_itemid not in _rewardPra):
                         return False
                     _seedid = _itemid
                     _count = _rewardPra[2]
                     await self.Add_seed(_seedid, _count)  # 增加种子
                 elif (_rewardType == 7):  # 奖励衣服
+                    _random = random.randint(0, 1)
+                    _itemid = _rewardPra[_random]
                     if (_itemid not in _rewardPra):
                         return False
                     _suitid = _itemid
+                    _count = _rewardPra[2]
                     await self.add_suit(_suitid)  # 增加衣服
                     await self.sold_moresuit()  # 出售多余的衣服
-                print("C_online_reward end")
+
                 self.dayonlinerew.append(_onlineid)
                 await self.sendonlinerewdata()
+
+                # 物品提示数据
+                await self.showitemtips(_rewardType, _itemid, _count, 1)
 
     # 开放场景
     async def C_openscene(self, _id):

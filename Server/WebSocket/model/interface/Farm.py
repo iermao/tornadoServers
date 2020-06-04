@@ -124,6 +124,12 @@ class Farm(object):
         # _smsg = json.dumps(_msg)
         await self.ToClientMsg(_msg)
 
+    # 发送变异数据
+    async def SendVariate(self, _oldid, _newid):
+        _data = {"id1": _oldid, "id2": _newid}  #拼接数据
+        _msg = {"id": MsgDefine.USER_MSG_SEEDVARIATE, "data": _data}
+        await self.ToClientMsg(_msg)
+
     # 将土地数据设置为对象
     async def SetobjPlantData(self):
         for key in self.plantdata.keys():
@@ -194,10 +200,10 @@ class Farm(object):
         key = str(seedid)
         if (key in self.seeddata):
             self.seeddata[key] += count
-            return True
         else:
             self.seeddata[key] = count
-            return True
+
+        await self.Sendseeddata()
 
     # 种子减少
     async def Rec_seed(self, seedid, count):
@@ -208,6 +214,8 @@ class Farm(object):
             self.seeddata[key] -= count
             if (self.seeddata[key] <= 0):
                 self.seeddata.pop(key)
+
+            await self.Sendseeddata()
             return True
         else:
             return False
@@ -236,7 +244,7 @@ class Farm(object):
         if (_state):
             # 记录种植次数
             await self.do_achieve_bytype(2, 1)  # 触发成就---种植
-            await self.addplantnums(seedid)
+            # await self.addplantnums(seedid)
             await self.DBM.log_plant(self, plantindex, seedid, "log_farm_plant")
 
         # 做任务类型为2的任务【种植】
@@ -314,6 +322,8 @@ class Farm(object):
                 await _plantobj.Harvest()
                 # 记录log
                 await self.DBM.log_plant(self, plantindex, _seedid, "log_farm_harvest")
+                # 增加植物种植次数数据
+                await self.addplantnums(_seedid)
 
                 await self.do_achieve_bytype(3, 1)  # 触发成就---植物召唤
 
@@ -324,7 +334,12 @@ class Farm(object):
         _plantobj = self.plantobj[plantindex]
         if (_plantobj != None):
             # print(self.cid, plantindex, _plantobj.seedid, await _plantobj.Toarr())
-            await _plantobj.changeState()
+            _state = await _plantobj.changeState()
+
+            if _state and _plantobj.step == 2:  #植物变异
+                _state2 = await _plantobj.variate()
+                if _state2:
+                    await self.SendVariate(_plantobj.oldid, _plantobj.seedid)
 
         await self.SendOnePlant(plantindex)
 
@@ -361,8 +376,8 @@ class PlantData(object):
         self.moneystate = 0  #是否金钱奖励
         self.waterstate = 0  #是否需要浇水
         self.watertimes = 0  #浇水时间
-        self.otherstate2 = 0
-        self.otherstate3 = 0
+        self.oldid = 0
+        self.variatestate = 0
         self.otherstate4 = 0
         pass
 
@@ -375,8 +390,8 @@ class PlantData(object):
         self.moneystate = _arr[5]
         self.waterstate = _arr[6]
         self.watertimes = _arr[7]
-        self.otherstate2 = _arr[8]
-        self.otherstate3 = _arr[9]
+        self.oldid = _arr[8]
+        self.variatestate = _arr[9]
         self.otherstate4 = _arr[10]
 
     async def Toarr(self):
@@ -389,8 +404,8 @@ class PlantData(object):
         _dataarr.append(self.moneystate)
         _dataarr.append(self.waterstate)
         _dataarr.append(self.watertimes)
-        _dataarr.append(self.otherstate2)
-        _dataarr.append(self.otherstate3)
+        _dataarr.append(self.oldid)
+        _dataarr.append(self.variatestate)
         _dataarr.append(self.otherstate4)
 
         return _dataarr
@@ -405,8 +420,8 @@ class PlantData(object):
         self.moneystate = 0
         self.waterstate = 1
         self.watertimes = 0
-        self.otherstate2 = 0
-        self.otherstate3 = 0
+        self.oldid = 0
+        self.variatestate = 0
         self.otherstate4 = 0
 
         return self
@@ -458,6 +473,32 @@ class PlantData(object):
                 self.moneystate = 1
             return True
         return False
+
+    # 植物变异
+    async def variate(self):
+        if self.step != 2:
+            return False
+        if self.variatestate == 1:
+            return False
+        _tmpseeddata = ConfigData.seed_Data[self.seedid]
+        # 是否能变异
+        canVariate = _tmpseeddata["canVariate"]
+        if (canVariate == 0):
+            return False
+        # 变异几率
+        variateRate = _tmpseeddata["variateRate"]
+
+        # 变异ID
+        variateId = _tmpseeddata["variateId"]
+
+        _random = random.randint(1, 100)
+        if (_random > 20):
+            return False
+
+        self.oldid = self.seedid
+        self.variatestate = 1
+        self.seedid = variateId
+        return True
 
     # 获取剩余多少时间完成
     async def getnexttime(self):
@@ -536,8 +577,8 @@ class PlantData(object):
         self.moneystate = 0
         self.waterstate = 0
         self.watertimes = 0
-        self.otherstate2 = 0
-        self.otherstate3 = 0
+        self.oldid = 0
+        self.variatestate = 0
         self.otherstate4 = 0
 
         return True

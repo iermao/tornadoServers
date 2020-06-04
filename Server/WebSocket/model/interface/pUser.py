@@ -70,6 +70,7 @@ class BaseUser(object):
 
     async def SaveData(self):
         await self.DBM.Save_BaseData(self)
+        await self.DBM.Save_signdata(self)
 
     # 发送单个用户数据
     # ["cid"] = _data[0]
@@ -149,8 +150,21 @@ class BaseUser(object):
         elif (_msgid == MsgDefine.USER_MSG_SAVESUIT):  # 保存套装数据
             await self.client_savesuit(_msg["data"])
 
-        elif (_msgid == MsgDefine.USER_MSG_THEMEMODELREWARD):  # 保存套装数据
+        elif (_msgid == MsgDefine.USER_MSG_THEMEMODELREWARD):  # 主题模特领取奖励
             await self.client_thememodere(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_SAVESUITACTION):  # 收藏界面保存套装数据操作
+            await self.client_savesuitaction(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_SHOPBUY):  # 商店购买
+            await self.client_shopbuy(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_SIGN):  # 签到
+            await self.client_sign(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_MSG_FREESHOP):  # 免费商店
+            await self.client_freeshop(_msg["data"])
+        #  //
 
         elif (False):
             pass
@@ -244,8 +258,7 @@ class BaseUser(object):
     # 在线领取奖励
     async def client_onlinereward(self, msg):
         _id = int(msg['id'])
-        _itemid = int(msg['itemid'])
-        await self.C_online_reward(_id, _itemid)
+        await self.C_online_reward(_id)
 
     # 开始抽奖
     async def client_luckystart(self, msg):
@@ -256,8 +269,7 @@ class BaseUser(object):
     # 幸运抽奖
     async def client_luckyreward(self, msg):
         _id = int(msg['id'])
-        _itemid = int(msg['itemid'])
-        await self.C_Lucky_reward(_id, _itemid)
+        await self.C_Lucky_reward(_id)
 
     # 成就领取
     async def client_achieveaward(self, msg):
@@ -273,7 +285,38 @@ class BaseUser(object):
     async def client_savesuit(self, msg):
         await self.C_savesuit()
 
+    # 主题模特领取奖励
     async def client_thememodere(self, msg):
         _val = int(msg['val'])
         await self.C_thememodel_re(_val)
         pass
+
+    # 保存套装数据操作类型
+    async def client_savesuitaction(self, msg):
+        _id = int(msg['id'])
+        _type = int(msg['type'])
+        await self.C_savesuitaction(_id, _type)
+        pass
+
+    # //商店购买
+    async def client_shopbuy(self, msg):
+        _type = int(msg['type'])
+        if (_type == MsgDefine.USER_SHOPBUY_GIFT):
+            _type = 1
+        elif (_type == MsgDefine.USER_SHOPBUY_PAYMONEY):
+            _type = 3
+        elif (_type == MsgDefine.USER_SHOPBUY_GAMEMONEY):
+            _type = 4
+        _index = int(msg['index'])
+        await self.C_shopbuy(_type, _index)
+        pass
+
+    # 签到
+    async def client_sign(self, msg):
+        await self.C_Sign()
+
+    # 免费商店
+    async def client_freeshop(self, msg):
+        _index = int(msg['index'])
+        await self.c_freeshop(_index)
+        # raise NotImplementedError
