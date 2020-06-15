@@ -71,6 +71,7 @@ class BaseUser(object):
     async def SaveData(self):
         await self.DBM.Save_BaseData(self)
         await self.DBM.Save_signdata(self)
+        await self.DBM.Save_timeseeddata(self)
 
     # 发送单个用户数据
     # ["cid"] = _data[0]
@@ -164,6 +165,13 @@ class BaseUser(object):
 
         elif (_msgid == MsgDefine.USER_MSG_FREESHOP):  # 免费商店
             await self.client_freeshop(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_TIMESEED):  # 限时种子刷新
+            await self.client_timesedupdate(_msg["data"])
+
+        elif (_msgid == MsgDefine.USER_TIMESEEDBUY):  # 限时种子购买
+            await self.client_buytimesed(_msg["data"])
+
         #  //
 
         elif (False):
@@ -178,7 +186,10 @@ class BaseUser(object):
         _msg = json.dumps(msg)
         # print(_msg)
         # if(self.pobj.close)
-        self.pobj.write_message(_msg)
+        try:
+            self.pobj.write_message(_msg)
+        except:
+            print("login out")
 
     async def SendToClientTips(self, id):
         _mgstr = ConfigData.GetMsgstr(id)
@@ -320,3 +331,13 @@ class BaseUser(object):
         _index = int(msg['index'])
         await self.c_freeshop(_index)
         # raise NotImplementedError
+
+    # 限时种子购买
+    async def client_buytimesed(self, msg):
+        _index = int(msg['index'])
+        await self.client_buytimeseed(_index)
+
+    # 限时种子数据刷新
+    async def client_timesedupdate(self, msg):
+        _index = int(msg['index'])
+        await self.set_timeseeddata()

@@ -38,6 +38,11 @@ class Farm(object):
         self.plantdata = _plantdata["plantdata"]
         self.seeddata = _plantdata["seeddata"]
 
+        # 未完成新手教学则将第三块土地数据重置
+        _guidestate = await self.get_guide()
+        if _guidestate == 0:
+            self.plantdata["2"] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
         _alldata = await self.DBM.getallplantdata(self.cid)
         self.allplantdata = _alldata["data"]
 
@@ -100,6 +105,7 @@ class Farm(object):
         else:
             _newall.init_db(_arr)
             _newall.add_shengwang(_counts)
+
         _tmparr = _newall.Toarr()
         self.allplantdata[str(_seedid)] = _tmparr
 
@@ -109,6 +115,12 @@ class Farm(object):
         await self.To_C_Tips(_msg)
 
         await self.sendallplantdata()
+
+        _counts = 0
+        for _val in self.allplantdata.values():
+            if (_val[2] >= 5000):
+                _counts = _counts + 1
+        await self.do_achieve_bytype(11, _counts)  # 触发成就---声望达到多少个
 
 
 #
@@ -203,7 +215,14 @@ class Farm(object):
         else:
             self.seeddata[key] = count
 
+        _seeddata = ConfigData.seed_Data[seedid]
+
+        _seedname = _seeddata["name_cn"]
+        _msg = {"id": 0, "data": "获得{0}x{1}".format(_seedname, count)}
+        await self.To_C_Tips(_msg)
         await self.Sendseeddata()
+
+        return True
 
     # 种子减少
     async def Rec_seed(self, seedid, count):
@@ -271,16 +290,18 @@ class Farm(object):
                 else:
                     pass
             if (_type == 1):  # 加速
-                # print("speed")
                 _mins = await _plantobj.getnexttime()
-                # print("speed", _mins)
                 if (_mins > 0):
                     _needmoney = _mins * 2
-                    # print("speed", _mins, _needmoney)
                     _state = await self.rec_paymoney(_needmoney)
-                    # print("speed", _mins, _needmoney, _state)
                     if (_state):
+                        # 加速
                         await _plantobj.speed()
+                        # 检测变异
+                        _state2 = await _plantobj.variate()  #植物变异
+                        if _state2:
+                            await self.SendVariate(_plantobj.oldid, _plantobj.seedid)
+
         await self.SendOnePlant(plantindex)
 
     # 收获按钮点击
@@ -311,6 +332,10 @@ class Farm(object):
                 # 消耗钻石收获
                 if (_type == 2):
                     _money = seeddata["callGems"]
+                    _guidestate = await self.get_guide()
+                    # 新手引导
+                    if _guidestate == 0:
+                        _money = 0
                     _state = await self.rec_paymoney(_money)
                     if (_state == False):
                         await self.SendToClientTips(101003)
@@ -318,7 +343,11 @@ class Farm(object):
                     _random = random.randint(0, len(dresslist) - 1)
                     _index = dresslist[_random]
 
-                await self.add_suit(_index)
+                    # 新手引导
+                    if _guidestate == 0:
+                        _index = 10101
+
+                await self.add_suit(_index, "plant")
                 await _plantobj.Harvest()
                 # 记录log
                 await self.DBM.log_plant(self, plantindex, _seedid, "log_farm_harvest")
@@ -327,6 +356,8 @@ class Farm(object):
 
                 await self.do_achieve_bytype(3, 1)  # 触发成就---植物召唤
 
+                await self.set_guide()
+
         await self.SendOnePlant(plantindex)
 
     # 检测是否完成
@@ -334,12 +365,19 @@ class Farm(object):
         _plantobj = self.plantobj[plantindex]
         if (_plantobj != None):
             # print(self.cid, plantindex, _plantobj.seedid, await _plantobj.Toarr())
-            _state = await _plantobj.changeState()
-
-            if _state and _plantobj.step == 2:  #植物变异
-                _state2 = await _plantobj.variate()
+            _guidestate = await self.get_guide()
+            # 不是新手引导
+            # print("C_Plant_check1", _guidestate, _plantobj.step)
+            if _guidestate == 1:
+                _state = await _plantobj.changeState(False)
+                # print("C_Plant_check11", _state, _plantobj.step)
+                # if _state and _plantobj.step == 2:  #植物变异
+                _state2 = await _plantobj.variate()  #植物变异
                 if _state2:
                     await self.SendVariate(_plantobj.oldid, _plantobj.seedid)
+            # 新手引导
+            else:
+                _state = await _plantobj.changeState(True)
 
         await self.SendOnePlant(plantindex)
 
@@ -364,6 +402,9 @@ class Farm(object):
                 if (_recstate):  # 消耗成功
                     _plantobj.langstate = 1
                     await self.SendOnePlant(plantindex)
+                    # 提示消息
+                    _msg = {"id": 0, "data": "土地开垦成功！"}
+                    await self.To_C_Tips(_msg)
 
 
 class PlantData(object):
@@ -444,7 +485,7 @@ class PlantData(object):
             return False
 
     #  检测状态
-    async def changeState(self):
+    async def changeState(self, _state):
 
         if (self.step == 4):
             return False
@@ -461,7 +502,10 @@ class PlantData(object):
             return False
 
         # print(self.watertimes, _steptime)
-        _needtimes = float(self.watertimes / 1000.00) + float(_steptime)
+        if _state:
+            _needtimes = 0
+        else:
+            _needtimes = float(self.watertimes / 1000.00) + float(_steptime)
 
         # print(_neewtimes, _steptime, _seeddata)
         if (_needtimes <= time.time()):
@@ -492,7 +536,8 @@ class PlantData(object):
         variateId = _tmpseeddata["variateId"]
 
         _random = random.randint(1, 100)
-        if (_random > 20):
+        # print("variate", _random)
+        if (_random > 21):
             return False
 
         self.oldid = self.seedid

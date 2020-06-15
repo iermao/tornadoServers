@@ -123,26 +123,27 @@ class Suit(object):
                 await self.Sendsuitdata()
 
     # 增加衣服数据
-    async def add_suit(self, dressid):
+    async def add_suit(self, dressid, _type):
 
         if dressid > 1:
             # 衣服已经拥有
             if (dressid in self.dressdata):
-                _data = {"id": dressid, "sta": 1}
+                _data = {"id": dressid, "sta": 1, "type": _type}
                 self.soldsuit.append(dressid)
             # 衣服没有
             else:
                 self.dressdata.append(dressid)
-                _data = {"id": dressid, "sta": 0}
+                _data = {"id": dressid, "sta": 0, "type": _type}
                 await self.add_suitlist(dressid)  # 套装数据
+            # 做任务类型为1的任务【召唤衣服】
+            await self.do_task_type(1)
+
         else:
-            _data = {"id": -1, "sta": 0}
+            _data = {"id": -1, "sta": 0, "type": _type}
 
         _msg = {"id": MsgDefine.USER_MSG_PLANT_HARVEST, "data": _data}  # 收获弹出衣服提示
         await self.ToClientMsg(_msg)
         await self.Senddressdata()
-        # 做任务类型为1的任务【召唤衣服】
-        await self.do_task_type(1)
 
     # 增加套装
     async def add_suitlist(self, dressid):
@@ -150,7 +151,7 @@ class Suit(object):
         if (_dresscon is None):
             return False
         _suitid = _dresscon["suitId"]
-        print("add_suitlist", self.suitlist.keys())
+        # print("add_suitlist", self.suitlist.keys())
         if (str(_suitid) in self.suitlist.keys()):
             _vallist = self.suitlist[str(_suitid)]
 
@@ -158,10 +159,29 @@ class Suit(object):
                 return False
             _vallist.append(dressid)
             self.suitlist[str(_suitid)] = _vallist
+
+            if (len(_vallist) == 9):
+                await self.do_achieve_bytype(4, 1)  # 触发成就---获取套装
+                _suitcon = ConfigData.suit_Data[_suitid]
+                _suittype = _suitcon["fame"]
+                if (_suittype == 1):
+                    await self.do_achieve_bytype(7, 1)  # 触发成就---收集整套C级套装
+                elif (_suittype == 2):
+                    await self.do_achieve_bytype(8, 1)  # 触发成就---收集整套B级套装
+                elif (_suittype == 3):
+                    await self.do_achieve_bytype(9, 1)  # 触发成就---收集整套A级套装
+                elif (_suittype == 4):
+                    await self.do_achieve_bytype(10, 1)  # 触发成就---收集整套S级套装
+
+                # # 套装提示
+                # await self.showitemtips(11, _suitid, 1, 1, 1)
         else:
             _vallist = []
             _vallist.append(dressid)
             self.suitlist[str(_suitid)] = _vallist
+
+        # 发送套装数据
+        await self.Sendsuitlist()
 
     # 换衣服
     async def C_Suit_Change(self, dressid):
@@ -226,9 +246,13 @@ class Suit(object):
         elif (percent >= 100):
             self.add_gamemoney(1480)
 
+        if (percent >= 100):
+            await self.do_achieve_bytype(12, 1)  # 触发成就---主题模特完成数量+1
+
     # 出售多余的衣服
     async def C_Plant_soldsuit(self, dressid):
         _tmpdata = ConfigData.dress_Data[dressid]
+        # print(dressid, _tmpdata)
         if (_tmpdata != None):
             _type = _tmpdata["sellType"]
             _money = _tmpdata["sellPrice"]
@@ -236,7 +260,9 @@ class Suit(object):
                 _state = await self.add_gamemoney(_money)
             if (_type == 2):
                 _state = await self.add_paymoney(_money)
-            self.soldsuit.remove(dressid)
+            # 出售装备
+            if dressid in self.soldsuit:
+                self.soldsuit.remove(dressid)
 
     # 存档查看是否有没有出售的衣服
     async def sold_moresuit(self):

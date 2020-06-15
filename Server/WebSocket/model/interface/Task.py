@@ -121,6 +121,10 @@ class Task(object):
             if (_state):
                 return False
             _state = await _taskpbj.add_donums()
+
+            # 任务数量必须是完成了才做成就
+            if _taskpbj.donums >= _taskpbj.num:
+                await self.do_achieve_bytype(6, 1)  # 触发成就---每日任务完成数量+1
             # await self.taskobjlisttodata()
             # # 成功做任务了发送任务数据
             # if (_state):
@@ -154,57 +158,28 @@ class Task(object):
             if (_state):
                 _reward_type = _taskpbj.rewardType
                 _reward_nums = _taskpbj.rewardPra[0]
-                if (_reward_type == 1):
-                    await self.add_gamemoney(_reward_nums)
-                if (_reward_type == 2):
-                    await self.add_paymoney(_reward_nums)
+
+                await self.AddItem(_reward_type, _taskpbj.rewardPra, 1, 1)
+
                 await self.sendtaskdata()
 
     #在线领取奖励
     async def C_online_reward(self, _onlineid):
-        print("C_online_reward")
+        # print("C_online_reward")
         if (_onlineid not in self.dayonlinerew):
             _con_data = ConfigData.onLine_Data[_onlineid]
             if (_con_data != None):
                 _rewardType = _con_data['rewardType']
                 _rewardPra = eval(_con_data['rewardPra'])
                 _time = _con_data['time']
-                print("_time  ", _time, self.basedata["dayonline"])
+                # print("_time  ", _time, self.basedata["dayonline"])
                 # 判断时间是否到了
                 if (_time > self.basedata["dayonline"] * 60):
                     return False
-                # print("_rewardType  ", _rewardType)
-                _itemid = 0
-                _count = 1
-                if (_rewardType == 1):  # 奖励金币
-                    _count = _rewardPra[0]
-                    await self.add_gamemoney(_count)
-                elif (_rewardType == 2):  # 奖励钻石
-                    _count = _rewardPra[0]
-                    await self.add_paymoney(_count)
-                elif (_rewardType == 5):  # 奖励种子
-                    _random = random.randint(0, 1)
-                    _itemid = _rewardPra[_random]
-                    if (_itemid not in _rewardPra):
-                        return False
-                    _seedid = _itemid
-                    _count = _rewardPra[2]
-                    await self.Add_seed(_seedid, _count)  # 增加种子
-                elif (_rewardType == 7):  # 奖励衣服
-                    _random = random.randint(0, 1)
-                    _itemid = _rewardPra[_random]
-                    if (_itemid not in _rewardPra):
-                        return False
-                    _suitid = _itemid
-                    _count = _rewardPra[2]
-                    await self.add_suit(_suitid)  # 增加衣服
-                    await self.sold_moresuit()  # 出售多余的衣服
+                await self.AddItem(_rewardType, _rewardPra, 1, 1)
 
                 self.dayonlinerew.append(_onlineid)
                 await self.sendonlinerewdata()
-
-                # 物品提示数据
-                await self.showitemtips(_rewardType, _itemid, _count, 1)
 
     # 开放场景
     async def C_openscene(self, _id):
@@ -220,7 +195,11 @@ class Task(object):
                     _state = await self.rec_paymoney(unlockNum)
                 if (_state):
                     self.openscene.append(_id)
+
                 await self.sendopenscenedata()
+
+                _length = len(self.openscene)
+                await self.do_achieve_bytype(5, _length + 2)  # 触发成就---场景解锁数量多少个
 
     # --------------------------------
     # -----------------成就数据相关
@@ -245,20 +224,20 @@ class Task(object):
             self.achieveobjlist[_data.id] = _data
 
     # 根据成就类型做成就
-    async def do_achieve_bytype(self, _type, _data):
+    async def do_achieve_bytype(self, _type, _value):
         for _val in ConfigData.achive_Data.values():
             if (_val["achievetype"] == _type):
-                await self.do_achieve(_type, _val["id"], _data)
+                await self.do_achieve(_type, _val["id"], _value)
 
     # 做成就
-    async def do_achieve(self, _type, _id, _data):
+    async def do_achieve(self, _type, _id, _value):
         # print("do_achieve ", _id)
         _state = False
         if _id in self.achieveobjlist.keys():
             _objval = self.achieveobjlist[_id]
             _state = True
-            if (_type == 1):
-                await _objval.set_donums(_data)
+            if (_type == 1 or _type == 11 or _type == 5):
+                await _objval.set_donums(_value)
             else:
                 await _objval.add_donums()
         if _state:
@@ -365,6 +344,8 @@ class AchieveData():
             self.rewardJb = _data["rewardJb"]
             self.rewardGems = _data["rewardGems"]
             self.donums = 0
+            if (self.achievetype == 5):  # 场景解锁成就默认是会解锁两个
+                self.donums = 2
             self.rewardstate = 0
 
     async def init_db(self, _arr):
