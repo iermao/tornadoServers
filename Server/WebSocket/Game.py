@@ -56,7 +56,8 @@ class game(object):
 
         for _pUser in self.playerList.values():
             await _pUser.loopTimer()
-            if (_pUser.herttime + 10) < _time:
+            # 心跳检测1分钟没链接则掉线
+            if (_pUser.herttime + 60 * 1) < _time:
                 self.deletecidlist.append(_pUser.cid)
 
         for _cid in self.deletecidlist:

@@ -38,8 +38,23 @@
 
 import os
 
-str = ('python main.py IC.txt')
+import datetime
+import time
 
-p = os.system(str)
+# str = ('python main.py IC.txt')
 
-print(p)
+# p = os.system(str)
+
+now_time = datetime.datetime.now()
+
+print(now_time)
+
+string = str(now_time)
+
+# time1 = datetime.datetime.strptime(string,'%M')
+
+time.localtime().tm_hour
+
+print(time.localtime().tm_min)
+
+print(time.localtime().tm_sec)

@@ -8,6 +8,7 @@ import os
 import json
 import time
 import random
+# import datetime
 
 from Server.WebSocket.model import Fun
 
@@ -58,6 +59,9 @@ class Player(BaseUser, Suit, Farm, Task):
         if (self.newday):
             await self.NewDay()
 
+        # 限时种子购买数据设置并发送数据
+        await self.set_timeseeddata()
+
     # 登录获取数据
     async def initData(self):
         # 基础数据
@@ -82,9 +86,6 @@ class Player(BaseUser, Suit, Farm, Task):
         # 基础数据
         await self.Sendbasedata()
 
-        # 限时种子购买数据设置并发送数据
-        await self.set_timeseeddata()
-
         # 发送在线奖励数据
         await self.sendonlinerewdata()
 
@@ -101,6 +102,8 @@ class Player(BaseUser, Suit, Farm, Task):
         self.dayonlinerew = []
         # 发送在线奖励数据
         await self.sendonlinerewdata()
+        # 新的一天重置限时种子数据
+        self.timeseeddata = {}
 
     # 登录初始化发送数据---begin
     async def Sendbasedata(self):
@@ -233,7 +236,7 @@ class Player(BaseUser, Suit, Farm, Task):
         await self.do_achieve_bytype(1, self.basedata["level"])  # # 触发成就---升级
 
         # 升级提示
-        _msg = {"id": 0, "data": "恭喜你升到了 " + str(self.basedata["level"]) + " 级"}
+        _msg = {"id": 0, "data": "恭喜你升到了 " + str(self.basedata["level"]) + " 级", "sound": 2}
         await self.To_C_Tips(_msg)
 
         # 升级奖励
@@ -254,7 +257,7 @@ class Player(BaseUser, Suit, Farm, Task):
         if (_value <= 0):
             return False
         self.basedata["gamemoney"] += _value
-        _msg = {"id": 0, "data": "获得金币x" + str(_value)}
+        _msg = {"id": 0, "data": "获得金币x" + str(_value), "sound": 1}
         await self.To_C_Tips(_msg)
         # await self.Sendbasedata()
         await self.SendBasedata_bykey("gamemoney", self.basedata["gamemoney"])
@@ -278,12 +281,15 @@ class Player(BaseUser, Suit, Farm, Task):
         return int(self.basedata["paymoney"])
 
     # 增加钻石
-    async def add_paymoney(self, _value):
+    async def add_paymoney(self, _value, _info=""):
         _value = int(_value)
         if (_value <= 0):
             return False
         self.basedata["paymoney"] += _value
-        _msg = {"id": 0, "data": "获得钻石x" + str(_value)}
+        if (_info == ""):
+            _msg = {"id": 0, "data": "获得钻石x" + str(_value), "sound": 1}
+        else:
+            _msg = {"id": 0, "data": _info + "钻石x" + str(_value), "sound": 1}
         await self.To_C_Tips(_msg)
         # await self.Sendbasedata()
         await self.SendBasedata_bykey("paymoney", self.basedata["paymoney"])
@@ -423,8 +429,47 @@ class Player(BaseUser, Suit, Farm, Task):
             await self.sold_moresuit()  # 出售多余的衣服
 
         elif (_type == 9):  # 奖励套装
-            _random = random.randint(_arr[0], _arr[1])
-            _id = _random
+
+            # 已经拥有的套装数据
+            _havesuitListkey_str = self.suitlist.keys()
+            _havesuitListkey = [int(i) for i in _havesuitListkey_str]
+            # print("_havesuitListkey", _havesuitListkey)
+            # A-S配表套装数据
+            _consuitListKey = ConfigData.A_S_suitlistid
+
+            # 没有集齐任意一件的套装id
+            _nolist = []
+            for _conval in _consuitListKey:
+                if (_conval not in _havesuitListkey):
+                    _nolist.append(_conval)
+            # print("_nolist1", _nolist)
+            # print("_consuitListKey", _consuitListKey)
+            # 套装全部拥有判断是否有配件没集齐
+            _havesuitlistdata = []
+            if len(_nolist) <= 0:
+                for _key in self.suitlist.keys():
+                    if (int(_key) in _consuitListKey):  # 必须是A-S的套装
+                        _val = self.suitlist[_key]
+                        if (len(_val) < 9):
+                            _tmpval = [int(_key), len(_val)]
+                            _havesuitlistdata.append(_tmpval)
+            # print("_havesuitlistdata1", _havesuitlistdata)
+            # 已集齐没有集齐全部的做个数组按照数量排序
+            if (len(_havesuitlistdata) > 0):
+                sorted(_havesuitlistdata, key=(lambda x: x[1]), reverse=True)
+                _id = _havesuitlistdata[0][0]
+                _countmin = _havesuitlistdata[0][1]
+                if (_countmin < 9):
+                    _nolist.append(_id)
+            # print("_havesuitlistdata2", _havesuitlistdata)
+            # print("_nolist1", _nolist)
+            # 没有的套装数据
+            if (len(_nolist) <= 0):
+                _msg = {"id": 0, "data": "你已经集齐A级或者A级以上所有套装"}
+                await self.To_C_Tips(_msg)
+                return
+            _random = random.randint(0, len(_nolist) - 1)
+            _id = _nolist[_random]
             _count = _arr[2]
             # if (_id not in _arr):
             #     return False
@@ -454,12 +499,20 @@ class Player(BaseUser, Suit, Farm, Task):
 
     # 设置限时种子商店数据
     async def set_timeseeddata(self):
+
+        _min = time.localtime().tm_min  #获取当前系统时间分钟
+        _sec = time.localtime().tm_sec  #获取当前时间秒钟
+        _tmptimes = 0
+        if _min < 31:
+            _tmptimes = 30 - _min
+        else:
+            _tmptimes = 60 - _min
         for i in range(2):
             _list = self.timeseeddata[str(i)]
             if (len(_list) != 4):
                 _seedid = random.randint(1001, 1036)
-                _time = int(time.time())
-                _longtime = 10
+                _time = int(time.time() - _sec)
+                _longtime = _tmptimes
                 _buycount = 0
                 _list = [_seedid, _time, _longtime, _buycount]
                 self.timeseeddata[str(i)] = _list
@@ -470,8 +523,8 @@ class Player(BaseUser, Suit, Farm, Task):
                 print(_time, int(time.time()))
                 if (time.time() >= _time):
                     _seedid = random.randint(1001, 1036)
-                    _time = int(time.time())
-                    _longtime = 10
+                    _time = int(time.time() - _sec)
+                    _longtime = _tmptimes
                     _buycount = 0
                     _list = [_seedid, _time, _longtime, _buycount]
                     self.timeseeddata[str(i)] = _list

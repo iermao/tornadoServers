@@ -81,6 +81,12 @@ def GetMsgstr(id):
         return _data["info_cn"]
 
 
+A_S_suitlistid = []
+
+for _val in suit_Data.values():
+    if (_val["fame"] == 3 or _val["fame"] == 4):
+        A_S_suitlistid.append(_val["id"])
+print(A_S_suitlistid)
 # 钻石商店消耗和增加数据
 shoplist3_con = [[19.9, 1400], [0.99, 60], [2.99, 200], [4.99, 340], [9.99, 740]]
 # 金币商店消耗和增加数据

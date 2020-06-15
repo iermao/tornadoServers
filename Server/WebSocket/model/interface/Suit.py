@@ -109,7 +109,7 @@ class Suit(object):
         # print("C_savesuitaction", _id, _type)
         # 删除
         if (_type == 1):
-            _val = self.savesuit[_id]
+            _val = copy.deepcopy(self.savesuit[_id])
             if (len(_val) > 0):
                 self.savesuit.remove(_val)
                 await self.Sendsavesuit()
@@ -117,7 +117,7 @@ class Suit(object):
                 return False
         # 装备
         if (_type == 2):
-            _val = self.savesuit[_id]
+            _val = copy.deepcopy(self.savesuit[_id])
             if (len(_val) > 0):
                 self.suitdata = _val
                 await self.Sendsuitdata()
@@ -135,8 +135,11 @@ class Suit(object):
                 self.dressdata.append(dressid)
                 _data = {"id": dressid, "sta": 0, "type": _type}
                 await self.add_suitlist(dressid)  # 套装数据
-            # 做任务类型为1的任务【召唤衣服】
-            await self.do_task_type(1)
+
+            # 衣服为种子获得
+            if _type == "plant":
+                # 做任务类型为1的任务【召唤衣服】
+                await self.do_task_type(1)
 
         else:
             _data = {"id": -1, "sta": 0, "type": _type}
@@ -162,6 +165,7 @@ class Suit(object):
 
             if (len(_vallist) == 9):
                 await self.do_achieve_bytype(4, 1)  # 触发成就---获取套装
+                await self.add_paymoney(100, "集齐套装奖励")  #集齐套装给100钻石奖励
                 _suitcon = ConfigData.suit_Data[_suitid]
                 _suittype = _suitcon["fame"]
                 if (_suittype == 1):
