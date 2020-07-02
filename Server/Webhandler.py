@@ -9,6 +9,9 @@ import tornado.httpserver
 
 from tornado.web import RequestHandler
 from Server.Web.Accountmanage import Account
+from Server.Web.bytedanceHandler import bytedanceHandler
+
+from tornado import httpclient
 
 import json
 
@@ -33,62 +36,70 @@ class IndexHandler(BaseHandler):
             print('IndexHandler类 get_current_user获取到用户:', user)
             return user
 
-    # @tornado.web.authenticated
     # 确认请求合法 依赖于get_current_user(self):函数的返回值作为判断请求是否合法
     async def get(self):
         self.write("get")
 
-    # @tornado.web.authenticated
     async def post(self, *args, **kwargs):
         self.write("post")
-        # print('IndexHandler 收到POST请求')
-        # self.render("online_index.html", current_user=self.current_user)
 
 
 class LoginHandler(BaseHandler):
-
     acc = Account()
 
     def set_default_headers(self):
         self.allowMyOrigin()
 
     async def get(self, *args, **kwargs):
-        '''
-        处理输入昵称界面get请求
-        :param args:
-        :param kwargs:
-        :return:
-        '''
-        # cookie_value = self.get_secure_cookie('count')
-        # print('cookie_value :', cookie_value)
-        # count = int(cookie_value) + 1 if cookie_value else 1
-        # self.set_secure_cookie("count",
-        #                        str(count))  # 设置一个带签名和时间戳的cookie，防止cookie被伪造。
-
-        # 使用ajax方法做的前端
-        # self.render('login_use_ajax.html')
-        # 使用form表单提交数据 的前端
-        # self.render('login_use_form.html')
         print("get")
-        await self.write("err")
+        self.write("err")
 
-    # @tornado.gen.coroutine
     async def post(self, *args, **kwargs):
-        '''
-        暂时用不到
-        :param args:
-        :param kwargs:
-        :return:
-        '''
         _data = self.request.body
-        # print("post begin :", _data)
-        # print(self.acc.POOL)
         msg = await self.acc.Reg(_data, self)
-        # print("post end :", msg)
+
         msgjson = json.loads(msg)
+        print(self.request.method)
+        print(self.request.uri)
+        print(self.request.path)
+        print(self.request.query)
+        print(self.request.version)
+        print(self.request.headers)
+        print(self.request.body)
+        print(self.request.remote_ip)
+        print(self.request.protocol)
+        print(self.request.host)
+        print(self.request.arguments)
+        print(self.request.query_arguments)
+        print(self.request.body_arguments)
+        print(self.request.files)
+        print(self.request.connection)
+        print(self.request.cookies)
+        print(self.request.full_url())
+        print(self.request.request_time())
+
         self.write(msgjson)
-        # self.write("11111")
+
         self.finish()
-        # print("222")
+
+    def check_origin(self, origin):
+        return True  # 允许WebSocket的跨域请求
+
+
+# 平台登录等
+class ptHandler(BaseHandler):
+    bytedance = bytedanceHandler()
+
+    def set_default_headers(self):
+        self.allowMyOrigin()
+
+    async def get(self, *args, **kwargs):
+        await self.bytedance.get_access_token(self)
+        self.finish()
+
+    async def post(self, *args, **kwargs):
+        await self.write("post")
+        self.finish()
+
     def check_origin(self, origin):
         return True  # 允许WebSocket的跨域请求

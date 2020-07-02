@@ -6,10 +6,11 @@ import os
 import tornado
 # import tornado.ioloop
 # import tornado.httpserver
-
 from tornado.options import define, options
 
-define("port", type=int, default=8001, help="run on the given port")
+from Server import config
+
+define("port", type=int, default=config.ws_point, help="run on the given port")
 
 # from .Webhandler import IndexHandler
 # from .Webhandler import LoginHandler

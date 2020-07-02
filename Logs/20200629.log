@@ -1,0 +1,76 @@
+2020-06-29 15:09:03,593 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:09:03,593 - logging.py[line:29] - INFO: 11
+2020-06-29 15:09:03,594 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 83.30ms
+2020-06-29 15:31:59,697 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:31:59,697 - logging.py[line:29] - INFO: 
+2020-06-29 15:31:59,698 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 1219.03ms
+2020-06-29 15:32:01,991 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:01,992 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:01,992 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 392.71ms
+2020-06-29 15:32:14,229 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:14,229 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:14,229 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 893.70ms
+2020-06-29 15:32:15,734 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:15,735 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:15,735 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 864.27ms
+2020-06-29 15:32:16,866 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:16,866 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:16,867 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 563.10ms
+2020-06-29 15:32:20,352 - web.py[line:2250] - WARNING: 404 GET /favicon.ico (192.168.1.189) 1.00ms
+2020-06-29 15:32:23,052 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:23,052 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:23,052 - web.py[line:2250] - INFO: 200 GET /pt/asdad (192.168.1.189) 332.61ms
+2020-06-29 15:32:24,264 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:24,264 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:24,264 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 422.20ms
+2020-06-29 15:32:25,240 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:25,240 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:25,241 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 799.10ms
+2020-06-29 15:32:25,931 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:25,931 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:25,932 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 525.40ms
+2020-06-29 15:32:27,084 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:27,084 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:27,085 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 590.78ms
+2020-06-29 15:32:27,970 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:27,970 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:27,970 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 762.32ms
+2020-06-29 15:32:29,061 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:29,061 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:29,062 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 941.57ms
+2020-06-29 15:32:29,499 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:29,499 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:29,500 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 498.12ms
+2020-06-29 15:32:31,097 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:31,098 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:31,098 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 851.72ms
+2020-06-29 15:32:31,808 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:31,808 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:31,809 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 898.29ms
+2020-06-29 15:32:32,341 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:32,341 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:32,342 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 534.60ms
+2020-06-29 15:32:33,202 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:33,202 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:33,202 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 618.23ms
+2020-06-29 15:32:34,022 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:34,022 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:34,022 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 527.06ms
+2020-06-29 15:32:36,509 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:36,510 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:36,510 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 622.24ms
+2020-06-29 15:32:36,801 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:36,801 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:36,802 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 554.23ms
+2020-06-29 15:32:38,775 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:38,776 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:38,776 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 472.70ms
+2020-06-29 15:32:39,394 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:39,394 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:39,395 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 635.37ms
+2020-06-29 15:32:41,008 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:41,008 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:41,008 - web.py[line:2250] - INFO: 304 GET /pt/asdad?aa=11 (192.168.1.189) 513.39ms
+2020-06-29 15:32:41,468 - logging.py[line:29] - INFO: {'errcode': 40014, 'errmsg': 'bad params', 'error': 1, 'message': 'bad parameters'}
+2020-06-29 15:32:41,468 - logging.py[line:29] - INFO: 
+2020-06-29 15:32:41,469 - web.py[line:2250] - INFO: 304 GET /pt/asdad (192.168.1.189) 613.69ms

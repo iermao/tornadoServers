@@ -508,7 +508,10 @@ class Player(BaseUser, Suit, Farm, Task):
         else:
             _tmptimes = 60 - _min
         for i in range(2):
-            _list = self.timeseeddata[str(i)]
+            _list = []
+            if len(self.timeseeddata) == 2:
+                _list = self.timeseeddata[str(i)]
+            # print("timeseeddata", self.timeseeddata)
             if (len(_list) != 4):
                 _seedid = random.randint(1001, 1036)
                 _time = int(time.time() - _sec)
